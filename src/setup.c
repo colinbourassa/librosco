@@ -189,11 +189,11 @@ bool mems_openserial(mems_info *info, const char *devPath)
             // set up the serial port:
             // * enable the receiver, set 8-bit fields, set local mode, disable hardware flow control, disable two stop bits
             // * set non-canonical mode, disable echos, disable signals
-            // * disable all software flow control
+            // * disable all special handling of CR or LF, disable software flow control
             // * disable all output post-processing
             newtio.c_cflag &= ((CREAD | CS8 | CLOCAL) & ~(CRTSCTS & CSTOPB));
             newtio.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-            newtio.c_iflag &= ~(IXON | IXOFF | IXANY);
+            newtio.c_iflag &= ~(INLCR | ICRNL | IGNCR | IXON | IXOFF | IXANY);
             newtio.c_oflag &= ~OPOST;
 
 #if defined(linux) || defined(__APPLE__)

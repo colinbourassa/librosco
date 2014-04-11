@@ -1,0 +1,10 @@
+CMakeCache.txt
+CMakeFiles/
+CPackConfig.cmake
+CPackSourceConfig.cmake
+Makefile
+bin/
+cmake_install.cmake
+libmems.3.gz
+src/mems_version.h
+
