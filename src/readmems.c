@@ -58,6 +58,7 @@ int main(int argc, char** argv)
         {
             printf("\t%s\n", commands[cmd_idx]);
         }
+        printf(" and [read-loop-count] is either a number or 'inf' to read forever.\n");
 
         return 0;
     }
