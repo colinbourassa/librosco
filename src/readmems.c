@@ -5,7 +5,7 @@
 #include <string.h>
 #include <strings.h>
 #include <libgen.h>
-#include "mems.h"
+#include "memsinjection.h"
 
 enum command_idx
 {

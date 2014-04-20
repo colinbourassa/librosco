@@ -17,7 +17,7 @@
   #include <string.h>
 #endif
 
-#include "mems.h"
+#include "memsinjection.h"
 #include "mems_internal.h"
 
 /**
