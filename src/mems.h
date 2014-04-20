@@ -15,6 +15,14 @@
   #include <errno.h>
 #endif
 
+#define DEBUG_P 1
+
+#ifdef DEBUG_P
+  #define dprintf_err printf
+#else
+  #define dprintf_err
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

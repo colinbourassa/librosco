@@ -1,0 +1,11 @@
+*.swp
+CMakeCache.txt
+CMakeFiles/
+CPackConfig.cmake
+CPackSourceConfig.cmake
+src/mems_version.h
+bin/
+Makefile
+cmake_install.cmake
+*.gz
+install_manifest.txt

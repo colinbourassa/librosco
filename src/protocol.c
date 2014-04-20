@@ -55,7 +55,7 @@ int16_t mems_read_serial(mems_info* info, uint8_t* buffer, uint16_t quantity)
 
     if (totalBytesRead < quantity)
     {
-        fprintf(stderr, "mems_read_serial(): expected %d, got %d\n", quantity, totalBytesRead);
+        dprintf_err("mems_read_serial(): expected %d, got %d\n", quantity, totalBytesRead);
     }
 
     return totalBytesRead;
@@ -107,17 +107,17 @@ bool mems_send_command(mems_info *info, uint8_t cmd)
             }
             else
             {
-                fprintf(stderr, "mems_send_command(): received one nonmatching byte (%02X) in response to command %02X\n", response, cmd);
+                dprintf_err("mems_send_command(): received one nonmatching byte (%02X) in response to command %02X\n", response, cmd);
             }
         }
         else
         {
-            fprintf(stderr, "mems_send_command(): did not receive echo of command %02X\n", cmd);
+            dprintf_err("mems_send_command(): did not receive echo of command %02X\n", cmd);
         }
     }
     else
     {
-        fprintf(stderr, "mems_send_command(): failed to send command %02X\n", cmd);
+        dprintf_err("mems_send_command(): failed to send command %02X\n", cmd);
     }
 
     return result;
@@ -140,42 +140,44 @@ bool mems_startup(mems_info* info)
 
     if (!mems_send_command(info, command_a))
     {
-        fprintf(stderr, "mems_startup(): Did not see %02X command echo\n", command_a);
+        dprintf_err("mems_startup(): Did not see %02X command echo\n", command_a);
         return false;
     }
     if (!mems_send_command(info, command_b))
     {
-        fprintf(stderr, "mems_startup(): Did not see %02X command echo\n", command_b);
+        dprintf_err("mems_startup(): Did not see %02X command echo\n", command_b);
         return false;
     }
     if (!mems_send_command(info, command_c))
     {
-        fprintf(stderr, "mems_startup(): Did not see %02X command echo\n", command_c);
+        dprintf_err("mems_startup(): Did not see %02X command echo\n", command_c);
         return false;
     }
     if (mems_read_serial(info, response_buffer, 1) != 1)
     {
-        fprintf(stderr, "mems_startup(): Did not see null terminator for %02X command\n", command_c);
+        dprintf_err("mems_startup(): Did not see null terminator for %02X command\n", command_c);
         return false;
     }
     if (!mems_send_command(info, command_d))
     {
-        fprintf(stderr, "mems_startup(): Did not see %02X command echo\n", command_d);
+        dprintf_err("mems_startup(): Did not see %02X command echo\n", command_d);
         return false;
     }
 
     // expect four more bytes after the echo of the D0 command byte
     bytecount = mems_read_serial(info, response_buffer, 4);
 
-    // test code
-    printf("%02X response: ", command_d);
-    for (idx = 0; idx < bytecount; ++idx)
-        printf("%02X ", response_buffer[idx]);
-    printf("\n");
+    if (DEBUG_P)
+    {
+        printf("Command '%02X' response: ", command_d);
+        for (idx = 0; idx < bytecount; ++idx)
+            printf("%02X ", response_buffer[idx]);
+        printf("\n");
+    }
 
     if (bytecount != 4)
     {
-        fprintf(stderr, "mems_startup(): Only received %d bytes after echo of %02X command", bytecount, command_d);
+        dprintf_err("mems_startup(): Only received %d bytes after echo of %02X command", bytecount, command_d);
         return false;
     }
 
@@ -242,12 +244,12 @@ bool mems_read_raw(mems_info* info, mems_data_frame* frame)
             }
             else
             {
-                fprintf(stderr, "mems_read(): failed to read data frame\n");
+                dprintf_err("mems_read(): failed to read data frame\n");
             }
         }
         else
         {
-            fprintf(stderr, "mems_read(): failed to send read command\n");
+            dprintf_err("mems_read(): failed to send read command\n");
         }
         mems_unlock(info);
     }
@@ -297,12 +299,12 @@ bool mems_read(mems_info* info, mems_data* data)
             }
             else
             {
-                fprintf(stderr, "mems_read(): failed to read data frame\n");
+                dprintf_err("mems_read(): failed to read data frame\n");
             }
         }
         else
         {
-            fprintf(stderr, "mems_read(): failed to send read command\n");
+            dprintf_err("mems_read(): failed to send read command\n");
         }
 
         mems_unlock(info);
