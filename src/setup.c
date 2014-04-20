@@ -1,4 +1,4 @@
-// libmems - a communications library for the Rover MEMS
+// libmemsinjection - a communications library for the Rover MEMS
 //
 // setup.c: This file contains routines that perform the
 //          setup/initialization of the library and the
@@ -83,15 +83,15 @@ void mems_cleanup(mems_info *info)
 
 /**
  * Returns version information for this build of the library.
- * @return Version of this build of libmems
+ * @return Version of this build of libmemsinjection
  */
-libmems_version mems_get_lib_version()
+libmemsinjection_version mems_get_lib_version()
 {
-    libmems_version ver;
+    libmemsinjection_version ver;
 
-    ver.major = LIBMEMS_VER_MAJOR;
-    ver.minor = LIBMEMS_VER_MINOR;
-    ver.patch = LIBMEMS_VER_PATCH;
+    ver.major = LIBMEMSINJECTION_VER_MAJOR;
+    ver.minor = LIBMEMSINJECTION_VER_MINOR;
+    ver.patch = LIBMEMSINJECTION_VER_PATCH;
 
     return ver;
 }

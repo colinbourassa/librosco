@@ -1,16 +1,16 @@
 cmake_minimum_required (VERSION 2.8)
-project (libmems)
+project (libmemsinjection)
 
-set (LIBMEMS_VER_MAJOR 0)
-set (LIBMEMS_VER_MINOR 1)
-set (LIBMEMS_VER_PATCH 0)
+set (LIBMEMSINJECTION_VER_MAJOR 0)
+set (LIBMEMSINJECTION_VER_MINOR 1)
+set (LIBMEMSINJECTION_VER_PATCH 0)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 set (SOURCE_SUBDIR "src")
 
 set (CPACK_SOURCE_GENERATOR "TGZ" "ZIP")
-set (CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMS_VER_MAJOR}.${LIBMEMS_VER_MINOR}.${LIBMEMS_VER_PATCH}-src")
+set (CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}-src")
 set (CPACK_SOURCE_IGNORE_FILES
       ".*deb$"
       ".*zip$"
@@ -37,8 +37,8 @@ configure_file (
   "${SOURCE_SUBDIR}/mems_version.h"
   )
 
-add_library (mems SHARED ${SOURCE_SUBDIR}/setup.c
-                         ${SOURCE_SUBDIR}/protocol.c)
+add_library (memsinjection SHARED ${SOURCE_SUBDIR}/setup.c
+                                  ${SOURCE_SUBDIR}/protocol.c)
 add_executable (readmems ${SOURCE_SUBDIR}/readmems.c)
 
 if (MINGW)
@@ -55,21 +55,21 @@ if (MINGW)
   file (WRITE "README.TXT" ${README_CONTENTS})
   file (WRITE "LICENSE.TXT" ${LICENSE_CONTENTS})
 
-  message (STATUS "Defaulting installation path to: $ENV{SystemDrive}/mems")
-  set (CMAKE_INSTALL_PREFIX "$ENV{SystemDrive}/mems")
+  message (STATUS "Defaulting installation path to: $ENV{SystemDrive}/memsinjection")
+  set (CMAKE_INSTALL_PREFIX "$ENV{SystemDrive}/memsinjection")
 
   set_target_properties (
-    mems
+    memsinjection
       PROPERTIES
-        SOVERSION ${LIBMEMS_VER_MAJOR}
-        VERSION ${LIBMEMS_VER_MAJOR}
+        SOVERSION ${LIBMEMSINJECTION_VER_MAJOR}
+        VERSION ${LIBMEMSINJECTION_VER_MAJOR}
   )
 
-  target_link_libraries (readmems mems)
+  target_link_libraries (readmems memsinjection)
 
-  install (FILES ${SOURCE_SUBDIR}/mems.h
+  install (FILES ${SOURCE_SUBDIR}/memsinjection.h
            DESTINATION "include")
-  install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.dll
+  install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.dll
            DESTINATION ".")
   install (FILES "README.txt"
                  "LICENSE.txt"
@@ -80,7 +80,7 @@ if (MINGW)
   set (CPACK_GENERATOR "ZIP")
   set (CPACK_PACKAGE_NAME ${PROJECT_NAME})
   set (CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
-  set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMS_VER_MAJOR}.${LIBMEMS_VER_MINOR}.${LIBMEMS_VER_PATCH}-${CMAKE_SYSTEM_NAME}")
+  set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}-${CMAKE_SYSTEM_NAME}")
   include (CPack)
 
 else()
@@ -94,7 +94,7 @@ else()
                       /usr/local/bin)
 
   if (GZIP_TOOL)
-    set (MAN "libmems.3")
+    set (MAN "libmemsinjection.3")
     set (MAN-GZ "${MAN}.gz")
     add_custom_command (OUTPUT ${MAN-GZ}
                         COMMAND ${GZIP_TOOL} -c ${MAN} > ${MAN-GZ}
@@ -123,47 +123,47 @@ else()
   endif()
 
   set_target_properties (
-    mems
+    memsinjection
       PROPERTIES
-        SOVERSION ${LIBMEMS_VER_MAJOR}
-        VERSION   ${LIBMEMS_VER_MAJOR}.${LIBMEMS_VER_MINOR}.${LIBMEMS_VER_PATCH}
+        SOVERSION ${LIBMEMSINJECTION_VER_MAJOR}
+        VERSION   ${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}
   )
 
-  target_link_libraries (readmems mems pthread)
+  target_link_libraries (readmems memsinjection pthread)
 
   # set the installation destinations for the header files,
   # shared library binaries, and reference utility
-  install (FILES ${SOURCE_SUBDIR}/mems.h
+  install (FILES ${SOURCE_SUBDIR}/memsinjection.h
            DESTINATION "include"
            PERMISSIONS
             OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
   if (CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
     message (STATUS "Using OpenBSD-style shared library naming.")
-    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.so
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.so.${LIBMEMS_VER_MAJOR}.${LIBMEMS_VER_MINOR}
+    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so
+                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     message (STATUS "Using Mac OS X-style shared library naming.")
-    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.dylib
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.${LIBMEMS_VER_MAJOR}.dylib
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.${LIBMEMS_VER_MAJOR}.${LIBMEMS_VER_MINOR}.${LIBMEMS_VER_PATCH}.dylib
+    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.dylib
+                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.${LIBMEMSINJECTION_VER_MAJOR}.dylib
+                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}.dylib
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   else()
     message (STATUS "Using Linux/FreeBSD-style shared library naming.")
-    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.so
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.so.${LIBMEMS_VER_MAJOR}
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmems.so.${LIBMEMS_VER_MAJOR}.${LIBMEMS_VER_MINOR}.${LIBMEMS_VER_PATCH}
+    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so
+                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so.${LIBMEMSINJECTION_VER_MAJOR}
+                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   endif()
 
-  install (DIRECTORY DESTINATION "share/doc/mems" DIRECTORY_PERMISSIONS
+  install (DIRECTORY DESTINATION "share/doc/memsinjection" DIRECTORY_PERMISSIONS
             OWNER_READ OWNER_EXECUTE OWNER_WRITE
             GROUP_READ GROUP_EXECUTE
             WORLD_READ WORLD_EXECUTE)
@@ -177,7 +177,7 @@ else()
 
   install (FILES "README"
                  "LICENSE"
-           DESTINATION "share/doc/mems"
+           DESTINATION "share/doc/memsinjection"
            PERMISSIONS
             OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
@@ -198,15 +198,15 @@ else()
 
     set (CPACK_GENERATOR "DEB")
     set (CPACK_PACKAGE_NAME ${PROJECT_NAME})
-    set (CPACK_PACKAGE_VERSION_MAJOR ${LIBMEMS_VER_MAJOR})
-    set (CPACK_PACKAGE_VERSION_MINOR ${LIBMEMS_VER_MINOR})
-    set (CPACK_PACKAGE_VERSION_PATCH ${LIBMEMS_VER_PATCH})
+    set (CPACK_PACKAGE_VERSION_MAJOR ${LIBMEMSINJECTION_VER_MAJOR})
+    set (CPACK_PACKAGE_VERSION_MINOR ${LIBMEMSINJECTION_VER_MINOR})
+    set (CPACK_PACKAGE_VERSION_PATCH ${LIBMEMSINJECTION_VER_PATCH})
     set (CPACK_DEBIAN_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
     set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Colin Bourassa <colin.bourassa@gmail.com>")
     set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
     set (CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.15)")
     set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library supporting serial communication with the Rover MEMS engine control module")
-    set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMS_VER_MAJOR}.${LIBMEMS_VER_MINOR}.${LIBMEMS_VER_PATCH}-${CMAKE_SYSTEM_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+    set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}-${CMAKE_SYSTEM_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
     set (CPACK_RESOURCE_FILE_LICENSE "LICENSE")
     set (CPACK_RESOURCE_FILE_README "README")
     include(CPack)

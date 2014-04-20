@@ -1,6 +1,6 @@
 .TH LIBMEMS 3
-.SH libmems
-libmems - Serial interface library for Rover MEMS engine management computer
+.SH libmemsinjection
+libmemsinjection - Serial interface library for Rover MEMS engine management computer
 
 .SH SYNOPSIS
 .B #include <mems.h>
@@ -16,13 +16,14 @@ This library provides an interface to the diagnostic serial port on the Rover ME
 .SH EXAMPLE
 mems_info info;
 .br
+mems_data data;
+.br
 mems_init(&info);
 .br
 .nf
 if (mems_connect(&info, "/dev/ttyUSB0"))
 {
-    mems_data params;
-    bool readSuccess = mems_read(&info, &params);
+    bool readSuccess = mems_read(&info, &data);
 }
 .br
 mems_cleanup(&info);
@@ -30,7 +31,7 @@ mems_cleanup(&info);
 .SH RESOURCES
 Information about building a compatible serial cable is available in the Wiki section of the project's Google Code web site:
 .br
-.I http://code.google.com/p/libmems/
+.I http://code.google.com/p/libmemsinjection/
 
 .SH AUTHOR
 Colin Bourassa <colin.bourassa@gmail.com>

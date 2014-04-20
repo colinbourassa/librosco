@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     int cmd_idx = 0;
     mems_data data;
     mems_data_frame frame;
-    libmems_version ver;
+    libmemsinjection_version ver;
     mems_info info;
     uint8_t readval = 0;
     uint8_t iac_limit_count = 80;
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 
     if (argc < 3)
     {
-        printf("readmems using libmems v%d.%d.%d\n", ver.major, ver.minor, ver.patch);
+        printf("readmems using libmemsinjection v%d.%d.%d\n", ver.major, ver.minor, ver.patch);
         printf("Usage: %s <serial device> <command> [read-loop-count]\n", basename(argv[0]));
         printf(" where <command> is one of the following:\n");
         for (cmd_idx = 0; cmd_idx < MC_Num_Commands; ++cmd_idx)

@@ -1,4 +1,4 @@
-// libmems - a communications library for the Rover MEMS ECU
+// libmemsinjection - a communications library for the Rover MEMS ECU
 //
 // protocol.c: This file contains routines specific to handling
 //             the software protocol used by the ECU over its

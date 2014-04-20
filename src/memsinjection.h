@@ -1,8 +1,8 @@
-#ifndef MEMS_H
-#define MEMS_H
+#ifndef MEMSINJECTION_H
+#define MEMSINJECTION_H
 
 /** \file mems.h
- * Header file defining the libmems functions, structs, and enums.
+ * Header file defining the libmemsinjection functions, structs, and enums.
  */
 
 #include <stdint.h>
@@ -125,7 +125,7 @@ typedef struct
   uint8_t minor;
   //! Patch version number
   uint8_t patch;
-} libmems_version;
+} libmemsinjection_version;
 
 /**
  * Contains information about the state of the current connection to the ECU.
@@ -165,7 +165,7 @@ bool mems_move_idle_bypass_motor(mems_info* info, bool close, uint8_t *position)
 bool mems_clear_faults(mems_info* info);
 bool mems_heartbeat(mems_info* info);
 
-libmems_version mems_get_lib_version();
+libmemsinjection_version mems_get_lib_version();
 
 /* Closing brace for 'extern "C"' */
 #ifdef __cplusplus
