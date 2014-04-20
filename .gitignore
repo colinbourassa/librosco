@@ -9,3 +9,8 @@ Makefile
 cmake_install.cmake
 *.gz
 install_manifest.txt
+Makefile
+bin/
+cmake_install.cmake
+libmems.3.gz
+src/mems_version.h
