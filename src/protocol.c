@@ -224,7 +224,7 @@ uint8_t temperature_value_to_degrees_f(uint8_t val)
  */
 uint8_t kpa_to_psi(uint8_t kpa)
 {
-    return (uint8_t)(kpa * 6.89475729);
+    return (uint8_t)(kpa / 6.89475729);
 }
 
 /**
