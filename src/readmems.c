@@ -5,7 +5,7 @@
 #include <string.h>
 #include <strings.h>
 #include <libgen.h>
-#include "mems.h"
+#include "memsinjection.h"
 
 enum command_idx
 {
@@ -58,6 +58,7 @@ int main(int argc, char** argv)
         {
             printf("\t%s\n", commands[cmd_idx]);
         }
+        printf(" and [read-loop-count] is either a number or 'inf' to read forever.\n");
 
         return 0;
     }

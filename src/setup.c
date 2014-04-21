@@ -19,7 +19,7 @@
   #include <arpa/inet.h>
 #endif
 
-#include "mems.h"
+#include "memsinjection.h"
 #include "mems_internal.h"
 #include "mems_version.h"
 
