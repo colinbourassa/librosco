@@ -126,7 +126,7 @@ bool mems_send_command(mems_info *info, uint8_t cmd)
 /**
  * Sends an initialization/startup sequence to the ECU. Required to enable further communication.
  */
-bool mems_init_link(mems_info* info, char* d0_response_buffer)
+bool mems_init_link(mems_info* info, uint8_t* d0_response_buffer)
 {
     uint8_t command_a = 0xCA;
     uint8_t command_b = 0x75;
