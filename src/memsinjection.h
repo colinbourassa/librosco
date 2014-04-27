@@ -148,7 +148,7 @@ typedef struct
 uint16_t swapShort(const uint16_t source);
 
 void mems_init(mems_info* info);
-bool mems_startup(mems_info* info);
+bool mems_init_link(mems_info* info, char* d0_response_buffer);
 void mems_cleanup(mems_info* info);
 bool mems_connect(mems_info* info, const char *devPath);
 void mems_disconnect(mems_info* info);

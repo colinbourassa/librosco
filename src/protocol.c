@@ -126,58 +126,45 @@ bool mems_send_command(mems_info *info, uint8_t cmd)
 /**
  * Sends an initialization/startup sequence to the ECU. Required to enable further communication.
  */
-bool mems_startup(mems_info* info)
+bool mems_init_link(mems_info* info, char* d0_response_buffer)
 {
     uint8_t command_a = 0xCA;
     uint8_t command_b = 0x75;
-    uint8_t command_c = MEMS_Heartbeat;
+    uint8_t command_c = MEMS_Heartbeat; // TODO: this command may not be needed
     uint8_t command_d = 0xD0;
-    uint8_t response_buffer[4] = { 0xFF, 0xFF, 0xFF, 0xFF }; // nominally D0 99 00 03 03
-    uint8_t bytecount = 0;
-
-    // test code
-    int idx = 0;
+    uint8_t buffer = 0x00;
 
     if (!mems_send_command(info, command_a))
     {
-        dprintf_err("mems_startup(): Did not see %02X command echo\n", command_a);
+        dprintf_err("mems_init_link(): Did not see %02X command echo\n", command_a);
         return false;
     }
     if (!mems_send_command(info, command_b))
     {
-        dprintf_err("mems_startup(): Did not see %02X command echo\n", command_b);
+        dprintf_err("mems_init_link(): Did not see %02X command echo\n", command_b);
         return false;
     }
     if (!mems_send_command(info, command_c))
     {
-        dprintf_err("mems_startup(): Did not see %02X command echo\n", command_c);
+        dprintf_err("mems_init_link(): Did not see %02X command echo\n", command_c);
         return false;
     }
-    if (mems_read_serial(info, response_buffer, 1) != 1)
+    if (mems_read_serial(info, &buffer, 1) != 1)
     {
-        dprintf_err("mems_startup(): Did not see null terminator for %02X command\n", command_c);
+        dprintf_err("mems_init_link(): Did not see null terminator for %02X command\n", command_c);
         return false;
     }
     if (!mems_send_command(info, command_d))
     {
-        dprintf_err("mems_startup(): Did not see %02X command echo\n", command_d);
+        dprintf_err("mems_init_link(): Did not see %02X command echo\n", command_d);
         return false;
     }
 
-    // expect four more bytes after the echo of the D0 command byte
-    bytecount = mems_read_serial(info, response_buffer, 4);
-
-    if (DEBUG_P)
+    // Expect four more bytes after the echo of the D0 command byte.
+    // Response is 99 00 03 03 for Mini SPi.
+    if (mems_read_serial(info, d0_response_buffer, 4) != 4)
     {
-        printf("Command '%02X' response: ", command_d);
-        for (idx = 0; idx < bytecount; ++idx)
-            printf("%02X ", response_buffer[idx]);
-        printf("\n");
-    }
-
-    if (bytecount != 4)
-    {
-        dprintf_err("mems_startup(): Only received %d bytes after echo of %02X command", bytecount, command_d);
+        dprintf_err("mems_init_link(): Received fewer bytes than expected after echo of %02X command", command_d);
         return false;
     }
 

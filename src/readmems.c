@@ -46,6 +46,7 @@ int main(int argc, char** argv)
     uint8_t iac_limit_count = 80;
     int read_loop_count = 1;
     bool read_inf = false;
+    uint8_t response_buffer[4];
 
     ver = mems_get_lib_version();
 
@@ -92,8 +93,12 @@ int main(int argc, char** argv)
 
     if (mems_connect(&info, argv[1]))
     {
-        if (mems_startup(&info))
+        if (mems_init_link(&info, response_buffer))
         {
+            printf("ECU responded to D0 command with: %02X %02X %02X %02X\n\n",
+                   response_buffer[0], response_buffer[1],
+                   response_buffer[2], response_buffer[3]);
+
             switch (cmd_idx)
             {
             case MC_Read:
