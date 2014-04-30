@@ -307,10 +307,12 @@ bool mems_fuel_pump_control(mems_info* info, bool pump_on)
 {
     uint8_t cmd = pump_on ? MEMS_FuelPumpOn : MEMS_FuelPumpOff;
     bool status = false;
+    uint8_t response = 0xFF;
 
     if (mems_lock(info))
     {
-        status = mems_send_command(info, cmd);
+        status = mems_send_command(info, cmd) &&
+                 (mems_read_serial(info, &response, 1) == 1);
         mems_unlock(info);
     }
     return status;
@@ -318,16 +320,18 @@ bool mems_fuel_pump_control(mems_info* info, bool pump_on)
 
 /**
  * Sends a command to open or close the manifold heater relay (also called the
- * PTC relay for "positive temperature coefficient").
+ * PTC relay, meaning "positive temperature coefficient").
  */
 bool mems_ptc_relay_control(mems_info* info, bool relay_on)
 {
     uint8_t cmd = relay_on ? MEMS_PTCRelayOn : MEMS_PTCRelayOff;
     bool status = false;
+    uint8_t response = 0xFF;
 
     if (mems_lock(info))
     {
-        status = mems_send_command(info, cmd);
+        status = mems_send_command(info, cmd) &&
+                 (mems_read_serial(info, &response, 1) == 1);
         mems_unlock(info);
     }
     return status; 
@@ -340,10 +344,12 @@ bool mems_ac_relay_control(mems_info* info, bool relay_on)
 {
     uint8_t cmd = relay_on ? MEMS_ACRelayOn : MEMS_ACRelayOff;
     bool status = false;
+    uint8_t response = 0xFF;
 
     if (mems_lock(info))
     {
-        status = mems_send_command(info, cmd);
+        status = mems_send_command(info, cmd) &&
+                 (mems_read_serial(info, &response, 1) == 1);
         mems_unlock(info);
     }
     return status;
@@ -355,10 +361,13 @@ bool mems_ac_relay_control(mems_info* info, bool relay_on)
 bool mems_test_injectors(mems_info* info)
 {
     bool status = false;
+    uint8_t response = 0xFF;
 
     if (mems_lock(info))
     {
-        status = mems_send_command(info, MEMS_TestInjectors);
+        // the additional byte (after the command byte echo) was observed to be 0x03
+        status = mems_send_command(info, MEMS_TestInjectors) &&
+                 (mems_read_serial(info, &response, 1) == 1);
         mems_unlock(info);
     }
     return status;
@@ -370,10 +379,12 @@ bool mems_test_injectors(mems_info* info)
 bool mems_test_coil(mems_info* info)
 {
     bool status = false;
+    uint8_t response = 0xFF;
 
     if (mems_lock(info))
     {
-        status = mems_send_command(info, MEMS_FireCoil);
+        status = mems_send_command(info, MEMS_FireCoil) &&
+                 (mems_read_serial(info, &response, 1) == 1);
         mems_unlock(info);
     }
     return status;
@@ -388,11 +399,8 @@ bool mems_read_iac_position(mems_info* info, uint8_t *position)
 
     if (mems_lock(info))
     {
-        if (mems_send_command(info, MEMS_GetIACPosition) &&
-            mems_read_serial(info, position, 1))
-        {
-            status = true;
-        }
+        status = mems_send_command(info, MEMS_GetIACPosition) &&
+                 (mems_read_serial(info, position, 1) == 1);
         mems_unlock(info);
     }
     return status;
@@ -408,11 +416,8 @@ bool mems_move_idle_bypass_motor(mems_info* info, bool close, uint8_t *position)
 
     if (mems_lock(info))
     {
-        if (mems_send_command(info, cmd) &&
-            mems_read_serial(info, position, 1))
-        {
-            status = true;
-        }
+        status = mems_send_command(info, cmd) &&
+                 (mems_read_serial(info, position, 1) == 1);
         mems_unlock(info);
     }
     return status;
@@ -430,8 +435,8 @@ bool mems_clear_faults(mems_info* info)
     {
         // send the command and check for one additional byte after the
         // echoed command byte (should be 0x00)
-        if (mems_send_command(info, (uint8_t)MEMS_ClearFaults) &&
-            (mems_read_serial(info, &response, 1) == 1))
+        status = mems_send_command(info, (uint8_t)MEMS_ClearFaults) &&
+                 (mems_read_serial(info, &response, 1) == 1);
         {
             status = true;
         }
