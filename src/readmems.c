@@ -107,7 +107,7 @@ int main(int argc, char** argv)
                     if (mems_read(&info, &data))
                     {
                         printf("RPM: %u\nCoolant (deg F): %u\nAmbient (deg F): %u\nIntake air (deg F): %u\n"
-                               "MAP (psi): %u\nMain voltage: %f\nThrottle pot voltage: %f\nIdle switch: %u\n"
+                               "MAP (psi): %f\nMain voltage: %f\nThrottle pot voltage: %f\nIdle switch: %u\n"
                                "Park/neutral switch: %u\nFault codes: %u\nIAC position: %u\n-------------\n",
                                 data.engine_rpm, data.coolant_temp_f, data.ambient_temp_f,
                                 data.intake_air_temp_f, data.map_psi, data.battery_voltage,
