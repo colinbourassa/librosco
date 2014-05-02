@@ -107,10 +107,11 @@ int main(int argc, char** argv)
                     if (mems_read(&info, &data))
                     {
                         printf("RPM: %u\nCoolant (deg F): %u\nAmbient (deg F): %u\nIntake air (deg F): %u\n"
-                               "MAP (psi): %f\nMain voltage: %f\nThrottle pot voltage: %f\nIdle switch: %u\n"
-                               "Park/neutral switch: %u\nFault codes: %u\nIAC position: %u\n-------------\n",
+                               "Fuel temp (deg F): %u\nMAP (psi): %f\nMain voltage: %f\nThrottle pot voltage: %f\n"
+                               "Idle switch: %u\nPark/neutral switch: %u\nFault codes: %u\nIAC position: %u\n"
+                               "-------------\n",
                                 data.engine_rpm, data.coolant_temp_f, data.ambient_temp_f,
-                                data.intake_air_temp_f, data.map_psi, data.battery_voltage,
+                                data.intake_air_temp_f, data.fuel_temp_f, data.map_psi, data.battery_voltage,
                                 data.throttle_pot_voltage, data.idle_switch, data.park_neutral_switch,
                                 data.fault_codes, data.iac_position);
                         success = true;
@@ -125,7 +126,7 @@ int main(int argc, char** argv)
                     {
                         printf("%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
                                frame.A, frame.engine_rpm_hi, frame.engine_rpm_lo, frame.coolant_temp,
-                               frame.ambient_temp, frame.intake_air_temp, frame.B, frame.map_kpa,
+                               frame.ambient_temp, frame.intake_air_temp, frame.fuel_temp, frame.map_kpa,
                                frame.battery_voltage, frame.throttle_pot, frame.idle_switch, frame.C,
                                frame.park_neutral_switch, frame.dtc0, frame.dtc1, frame.D, frame.E, frame.F,
                                frame.iac_position, frame.G_hi, frame.G_lo, frame.H, frame.I, frame.J_hi, frame.J_lo,

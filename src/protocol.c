@@ -262,6 +262,7 @@ bool mems_read(mems_info* info, mems_data* data)
                 data->coolant_temp_f       = temperature_value_to_degrees_f(dframe.coolant_temp);
                 data->ambient_temp_f       = temperature_value_to_degrees_f(dframe.ambient_temp);
                 data->intake_air_temp_f    = temperature_value_to_degrees_f(dframe.intake_air_temp);
+                data->fuel_temp_f          = temperature_value_to_degrees_f(dframe.fuel_temp);
                 data->map_psi              = kpa_to_psi(dframe.map_kpa);
                 data->battery_voltage      = dframe.battery_voltage / 10.0;
                 data->throttle_pot_voltage = dframe.throttle_pot * 0.02;
