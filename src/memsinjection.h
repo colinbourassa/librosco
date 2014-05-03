@@ -27,28 +27,45 @@
 extern "C" {
 #endif
 
-enum mems_commands
+#define IAC_MAXIMUM 0xB4
+
+enum mems_data_command
+{
+    MEMS_ReqData        = 0x80,
+    MEMS_ClearFaults    = 0xCC,
+    MEMS_Heartbeat      = 0xF4,
+    MEMS_GetIACPosition = 0xFB
+};
+
+enum mems_actuator_command
 {
     MEMS_FuelPumpOn     = 0x11,
     MEMS_FuelPumpOff    = 0x01,
-
     MEMS_PTCRelayOn     = 0x12,
     MEMS_PTCRelayOff    = 0x02,
-
     MEMS_ACRelayOn      = 0x13,
     MEMS_ACRelayOff     = 0x03,
-
-    MEMS_ReqData        = 0x80,
-    MEMS_Heartbeat      = 0xF4,
-
+#if 0
+    /* I currently have no way to test these commands,
+       so I'm excluding them from the build for now. */
+    MEMS_PurgeValveOn   = 0x18,
+    MEMS_PurgeValveOff  = 0x08,
+    MEMS_O2HeaterOn     = 0x19,
+    MEMS_O2HeaterOff    = 0x09,
+    MEMS_BoostValveOn   = 0x1B,
+    MEMS_BoostValveOff  = 0x0B,
+    MEMS_Fan1On         = 0x1D,
+    MEMS_Fan1Off        = 0x0D,
+    MEMS_Fan2On         = 0x1E,
+    MEMS_Fan2Off        = 0x0E
+#endif
     MEMS_TestInjectors  = 0xF7,
     MEMS_FireCoil       = 0xF8,
-    MEMS_GetIACPosition = 0xFB,
     MEMS_OpenIAC        = 0xFD,
-    MEMS_CloseIAC       = 0xFE,
-
-    MEMS_ClearFaults    = 0xCC
+    MEMS_CloseIAC       = 0xFE
 };
+
+typedef enum mems_actuator_command actuator_cmd;
 
 /**
  * Data sequence returned by the ECU in reply to the command 0x80.
@@ -71,23 +88,23 @@ typedef struct
     uint8_t battery_voltage;
     uint8_t throttle_pot;
     uint8_t idle_switch;
-    uint8_t C;
+    uint8_t B;
     uint8_t park_neutral_switch;
     uint8_t dtc0;
     uint8_t dtc1;
+    uint8_t C;
     uint8_t D;
     uint8_t E;
-    uint8_t F;
     uint8_t iac_position;
-    uint8_t G_hi;
-    uint8_t G_lo;
+    uint8_t F_hi;
+    uint8_t F_lo;
+    uint8_t G;
     uint8_t H;
-    uint8_t I;
-    uint8_t J_hi;
-    uint8_t J_lo;
+    uint8_t I_hi;
+    uint8_t I_lo;
+    uint8_t J;
     uint8_t K;
     uint8_t L;
-    uint8_t M;
 } mems_data_frame;
 
 /**
@@ -146,23 +163,17 @@ typedef struct
 #endif
 } mems_info;
 
-uint16_t swapShort(const uint16_t source);
-
 void mems_init(mems_info* info);
 bool mems_init_link(mems_info* info, uint8_t* d0_response_buffer);
 void mems_cleanup(mems_info* info);
-bool mems_connect(mems_info* info, const char *devPath);
+bool mems_connect(mems_info* info, const char* devPath);
 void mems_disconnect(mems_info* info);
 bool mems_is_connected(mems_info* info);
 bool mems_read_raw(mems_info* info, mems_data_frame* frame);
 bool mems_read(mems_info* info, mems_data* data);
-bool mems_startup_sequence(mems_info* info);
-bool mems_fuel_pump_control(mems_info* info, bool pump_on);
-bool mems_ptc_relay_control(mems_info* info, bool relay_on);
-bool mems_ac_relay_control(mems_info* info, bool relay_on);
-bool mems_test_injectors(mems_info* info);
-bool mems_test_coil(mems_info* info);
-bool mems_move_idle_bypass_motor(mems_info* info, bool close, uint8_t *position);
+bool mems_read_iac_position(mems_info* info, uint8_t* position);
+bool mems_move_iac(mems_info* info, uint8_t desired_pos);
+bool mems_test_actuator(mems_info* info, actuator_cmd cmd, uint8_t* data);
 bool mems_clear_faults(mems_info* info);
 bool mems_heartbeat(mems_info* info);
 

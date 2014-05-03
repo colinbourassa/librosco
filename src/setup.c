@@ -24,24 +24,6 @@
 #include "mems_version.h"
 
 /**
- * Swaps multibyte big-endian data (from the ECU) into the local endianness.
- */
-#if defined(WIN32)
-uint16_t swapShort(const uint16_t source)
-{
-    static const uint16_t hibyte = 0xff00;
-    static const uint16_t lobyte = 0x00ff;
-
-    return ((source & hibyte) >> 8) | ((source & lobyte) << 8);
-}
-#else
-uint16_t swapShort(const uint16_t source)
-{
-    return ntohs(source);
-}
-#endif
-
-/**
  * Sets initial values in the state-info struct.
  * Note that this routine does not actually open the serial port or attempt
  * to connect to the ECU; that requires mems_connect().

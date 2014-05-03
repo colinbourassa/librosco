@@ -90,7 +90,10 @@ int16_t mems_write_serial(mems_info* info, uint8_t* buffer, uint16_t quantity)
 }
 
 /**
- * Sends a single command byte to the ECU and waits for the same byte to be echoed as a response.
+ * Sends a single command byte to the ECU and waits for the same byte to be
+ * echoed as a response. Note that if the ECU sends one or more bytes of
+ * data in addition to the echoed command byte, mems_read_serial() must also
+ * be called to retrieve that data from the input buffer.
  */
 bool mems_send_command(mems_info *info, uint8_t cmd)
 {
@@ -302,99 +305,9 @@ bool mems_read(mems_info* info, mems_data* data)
 }
 
 /**
- * Sends a command to open or close the fuel pump relay.
- */
-bool mems_fuel_pump_control(mems_info* info, bool pump_on)
-{
-    uint8_t cmd = pump_on ? MEMS_FuelPumpOn : MEMS_FuelPumpOff;
-    bool status = false;
-    uint8_t response = 0xFF;
-
-    if (mems_lock(info))
-    {
-        status = mems_send_command(info, cmd) &&
-                 (mems_read_serial(info, &response, 1) == 1);
-        mems_unlock(info);
-    }
-    return status;
-}
-
-/**
- * Sends a command to open or close the manifold heater relay (also called the
- * PTC relay, meaning "positive temperature coefficient").
- */
-bool mems_ptc_relay_control(mems_info* info, bool relay_on)
-{
-    uint8_t cmd = relay_on ? MEMS_PTCRelayOn : MEMS_PTCRelayOff;
-    bool status = false;
-    uint8_t response = 0xFF;
-
-    if (mems_lock(info))
-    {
-        status = mems_send_command(info, cmd) &&
-                 (mems_read_serial(info, &response, 1) == 1);
-        mems_unlock(info);
-    }
-    return status; 
-}
-
-/**
- * Sends a command to open or close the air conditioning relay.
- */
-bool mems_ac_relay_control(mems_info* info, bool relay_on)
-{
-    uint8_t cmd = relay_on ? MEMS_ACRelayOn : MEMS_ACRelayOff;
-    bool status = false;
-    uint8_t response = 0xFF;
-
-    if (mems_lock(info))
-    {
-        status = mems_send_command(info, cmd) &&
-                 (mems_read_serial(info, &response, 1) == 1);
-        mems_unlock(info);
-    }
-    return status;
-}
-
-/**
- * Sends a command to cycle the fuel injector(s).
- */
-bool mems_test_injectors(mems_info* info)
-{
-    bool status = false;
-    uint8_t response = 0xFF;
-
-    if (mems_lock(info))
-    {
-        // the additional byte (after the command byte echo) was observed to be 0x03
-        status = mems_send_command(info, MEMS_TestInjectors) &&
-                 (mems_read_serial(info, &response, 1) == 1);
-        mems_unlock(info);
-    }
-    return status;
-}
-
-/**
- * Sends a command to fire the ignition coil.
- */
-bool mems_test_coil(mems_info* info)
-{
-    bool status = false;
-    uint8_t response = 0xFF;
-
-    if (mems_lock(info))
-    {
-        status = mems_send_command(info, MEMS_FireCoil) &&
-                 (mems_read_serial(info, &response, 1) == 1);
-        mems_unlock(info);
-    }
-    return status;
-}
-
-/**
  * Reads the current idle air control motor position.
  */
-bool mems_read_iac_position(mems_info* info, uint8_t *position)
+bool mems_read_iac_position(mems_info* info, uint8_t* position)
 {
     bool status = false;
 
@@ -407,18 +320,53 @@ bool mems_read_iac_position(mems_info* info, uint8_t *position)
     return status;
 }
 
-/**
- * Sends a command to open or close the idle air control motor by one step.
- */
-bool mems_move_idle_bypass_motor(mems_info* info, bool close, uint8_t *position)
+bool mems_move_iac(mems_info* info, uint8_t desired_pos)
 {
-    uint8_t cmd = close ? MEMS_CloseIAC : MEMS_OpenIAC;
     bool status = false;
+    uint16_t attempts = 0;
+    uint8_t current_pos = 0;
+    actuator_cmd cmd;
+
+    // read the current IAC position, and only take action
+    // if we're not already at the desired point
+    if (mems_read_iac_position(info, &current_pos))
+    {
+        if ((desired_pos < current_pos) ||
+            ((desired_pos > current_pos) && (current_pos < IAC_MAXIMUM)))
+        {
+            cmd = (desired_pos > current_pos) ? MEMS_OpenIAC : MEMS_CloseIAC;
+
+            do {
+                status = mems_test_actuator(info, cmd, &current_pos);
+                attempts += 1;
+            } while (status && (current_pos != desired_pos) && (attempts < 300));
+        }
+    }
+
+    status = (desired_pos == current_pos);
+
+    return status;
+}
+
+/**
+ * Sends a command to run an actuator test, and returns the single byte of data.
+ */
+bool mems_test_actuator(mems_info* info, actuator_cmd cmd, uint8_t* data)
+{
+    bool status = false;
+    uint8_t response = 0x00;
 
     if (mems_lock(info))
     {
-        status = mems_send_command(info, cmd) &&
-                 (mems_read_serial(info, position, 1) == 1);
+        if (mems_send_command(info, cmd) &&
+            (mems_read_serial(info, &response, 1) == 1))
+        {
+            if (data)
+            {
+                *data = response;
+            }
+            status = true;
+        }
         mems_unlock(info);
     }
     return status;

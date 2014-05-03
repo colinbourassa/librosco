@@ -127,10 +127,10 @@ int main(int argc, char** argv)
                         printf("%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
                                frame.A, frame.engine_rpm_hi, frame.engine_rpm_lo, frame.coolant_temp,
                                frame.ambient_temp, frame.intake_air_temp, frame.fuel_temp, frame.map_kpa,
-                               frame.battery_voltage, frame.throttle_pot, frame.idle_switch, frame.C,
-                               frame.park_neutral_switch, frame.dtc0, frame.dtc1, frame.D, frame.E, frame.F,
-                               frame.iac_position, frame.G_hi, frame.G_lo, frame.H, frame.I, frame.J_hi, frame.J_lo,
-                               frame.K, frame.L, frame.M);
+                               frame.battery_voltage, frame.throttle_pot, frame.idle_switch, frame.B,
+                               frame.park_neutral_switch, frame.dtc0, frame.dtc1, frame.C, frame.D, frame.E,
+                               frame.iac_position, frame.F_hi, frame.F_lo, frame.G, frame.H, frame.I_hi, frame.I_lo,
+                               frame.J, frame.K, frame.L);
                         success = true;
                     }
                 }
@@ -145,25 +145,25 @@ int main(int argc, char** argv)
                 break;
 
             case MC_PTC:
-                if (mems_ptc_relay_control(&info, true))
+                if (mems_test_actuator(&info, MEMS_PTCRelayOn, NULL))
                 {
                     sleep(2);
-                    success = mems_ptc_relay_control(&info, false);
+                    success = mems_test_actuator(&info, MEMS_PTCRelayOff, NULL);
                 }
                 break;
 
             case MC_FuelPump:
-                if (mems_fuel_pump_control(&info, true))
+                if (mems_test_actuator(&info, MEMS_FuelPumpOn, NULL))
                 {
                     sleep(2);
-                    success = mems_fuel_pump_control(&info, false);
+                    success = mems_test_actuator(&info, MEMS_FuelPumpOff, NULL);
                 }
                 break;
 
             case MC_IAC_Close:
                 do
                 {
-                    success = mems_move_idle_bypass_motor(&info, true, &readval);
+                    success = mems_test_actuator(&info, MEMS_CloseIAC, &readval);
 
                     // For some reason, diagnostic tools will continue to send send the
                     // 'close' command many times after the IAC has already reached the
@@ -181,24 +181,24 @@ int main(int argc, char** argv)
                 // that point.
                 do
                 {
-                    success = mems_move_idle_bypass_motor(&info, false, &readval);
+                    success = mems_test_actuator(&info, MEMS_OpenIAC, &readval);
                 } while(success && (readval < 0xB4));
                 break;
 
             case MC_AC:
-                if (mems_ac_relay_control(&info, true))
+                if (mems_test_actuator(&info, MEMS_ACRelayOn, NULL))
                 {
                     sleep(2);
-                    success = mems_ac_relay_control(&info, false);
+                    success = mems_test_actuator(&info, MEMS_ACRelayOff, NULL);
                 }
                 break;
 
             case MC_Coil:
-                success = mems_test_coil(&info);
+                success = mems_test_actuator(&info, MEMS_FireCoil, NULL);
                 break;
 
             case MC_Injectors:
-                success = mems_test_injectors(&info);
+                success = mems_test_actuator(&info, MEMS_TestInjectors, NULL);
                 break;
 
             default:
