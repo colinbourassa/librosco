@@ -29,6 +29,9 @@ extern "C" {
 
 #define IAC_MAXIMUM 0xB4
 
+/**
+ * These general commands are used to request data and clear fault codes.
+ */
 enum mems_data_command
 {
     MEMS_ReqData        = 0x80,
@@ -37,6 +40,13 @@ enum mems_data_command
     MEMS_GetIACPosition = 0xFB
 };
 
+/**
+ * These commands are used to test actuators on the car.
+ * Although some commands have on/off pairs (for controlling relays),
+ * MEMS 1.6 (as fitted to the Mini SPi) will automatically shut off these
+ * these actuators after a short period of time (< 1s). The "off" command,
+ * if sent, will be acknowledged, but there is apparently no action taken.
+ */
 enum mems_actuator_command
 {
     MEMS_FuelPumpOn     = 0x11,
