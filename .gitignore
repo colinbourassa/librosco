@@ -3,6 +3,7 @@ CMakeCache.txt
 CMakeFiles/
 CPackConfig.cmake
 CPackSourceConfig.cmake
+_CPack_Packages/
 src/mems_version.h
 bin/
 Makefile
@@ -14,3 +15,4 @@ bin/
 cmake_install.cmake
 libmems.3.gz
 src/mems_version.h
+*.deb
