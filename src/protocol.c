@@ -133,7 +133,8 @@ bool mems_init_link(mems_info* info, uint8_t* d0_response_buffer)
 {
     uint8_t command_a = 0xCA;
     uint8_t command_b = 0x75;
-    uint8_t command_c = 0xD0;
+    uint8_t command_c = MEMS_Heartbeat;
+    uint8_t command_d = 0xD0;
     uint8_t buffer = 0x00;
 
     if (!mems_send_command(info, command_a))
@@ -151,12 +152,22 @@ bool mems_init_link(mems_info* info, uint8_t* d0_response_buffer)
         dprintf_err("mems_init_link(): Did not see %02X command echo\n", command_c);
         return false;
     }
+    if (mems_read_serial(info, &buffer, 1) != 1)
+    {
+        dprintf_err("mems_init_link(): Did not see null terminator for %02X command\n", command_c);
+        return false;
+    }
+    if (!mems_send_command(info, command_d))
+    {
+        dprintf_err("mems_init_link(): Did not see %02X command echo\n", command_d);
+        return false;
+    }
 
     // Expect four more bytes after the echo of the D0 command byte.
     // Response is 99 00 03 03 for Mini SPi.
     if (mems_read_serial(info, d0_response_buffer, 4) != 4)
     {
-        dprintf_err("mems_init_link(): Received fewer bytes than expected after echo of %02X command", command_c);
+        dprintf_err("mems_init_link(): Received fewer bytes than expected after echo of %02X command", command_d);
         return false;
     }
 
