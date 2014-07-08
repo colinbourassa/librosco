@@ -15,7 +15,7 @@
   #include <errno.h>
 #endif
 
-#define DEBUG_P 0
+#define DEBUG_P
 
 #ifdef DEBUG_P
   #define dprintf_err printf
