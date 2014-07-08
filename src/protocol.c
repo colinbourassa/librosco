@@ -269,7 +269,7 @@ bool mems_read(mems_info* info, mems_data* data)
                 data->map_psi              = kpa_to_psi(dframe.map_kpa);
                 data->battery_voltage      = dframe.battery_voltage / 10.0;
                 data->throttle_pot_voltage = dframe.throttle_pot * 0.02;
-                data->idle_switch          = (dframe.idle_switch == 0) ? 0 : 1;
+                data->idle_switch          = ((dframe.idle_switch & 0x10) == 0) ? 0 : 1;
                 data->park_neutral_switch  = (dframe.park_neutral_switch == 0) ? 0 : 1;
                 data->fault_codes          = 0;
                 data->iac_position         = dframe.iac_position;
