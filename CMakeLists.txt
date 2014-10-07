@@ -3,7 +3,7 @@ project (libmemsinjection)
 
 set (LIBMEMSINJECTION_VER_MAJOR 0)
 set (LIBMEMSINJECTION_VER_MINOR 1)
-set (LIBMEMSINJECTION_VER_PATCH 2)
+set (LIBMEMSINJECTION_VER_PATCH 3)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
@@ -37,6 +37,12 @@ configure_file (
   "${SOURCE_SUBDIR}/mems_version.h"
   )
 
+include_directories (
+  "${CMAKE_SOURCE_DIR}"
+  "${CMAKE_SOURCE_DIR}/src"
+  "${CMAKE_BINARY_DIR}/src"
+  )
+
 add_library (memsinjection SHARED ${SOURCE_SUBDIR}/setup.c
                                   ${SOURCE_SUBDIR}/protocol.c)
 add_executable (readmems ${SOURCE_SUBDIR}/readmems.c)
@@ -50,10 +56,10 @@ if (MINGW)
   set (CMAKE_EXE_LINKER_FLAGS "-static-libgcc")
 
   # convert Unix-style newline characters into Windows-style
-  file (READ "README" README_CONTENTS)
-  file (READ "LICENSE" LICENSE_CONTENTS)
-  file (WRITE "README.TXT" ${README_CONTENTS})
-  file (WRITE "LICENSE.TXT" ${LICENSE_CONTENTS})
+  file (READ "${CMAKE_SOURCE_DIR}/README" README_CONTENTS)
+  file (READ "${CMAKE_SOURCE_DIR}/LICENSE" LICENSE_CONTENTS)
+  file (WRITE "${CMAKE_BINARY_DIR}/README.TXT" ${README_CONTENTS})
+  file (WRITE "${CMAKE_BINARY_DIR}/LICENSE.TXT" ${LICENSE_CONTENTS})
 
   message (STATUS "Defaulting installation path to: $ENV{SystemDrive}/memsinjection")
   set (CMAKE_INSTALL_PREFIX "$ENV{SystemDrive}/memsinjection")
@@ -69,10 +75,10 @@ if (MINGW)
 
   install (FILES ${SOURCE_SUBDIR}/memsinjection.h
            DESTINATION "include")
-  install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.dll
+  install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PROJECT_NAME}.dll
            DESTINATION ".")
-  install (FILES "README.txt"
-                 "LICENSE.txt"
+  install (FILES "${CMAKE_BINARY_DIR}/README.txt"
+                 "${CMAKE_BINARY_DIR}/LICENSE.txt"
            DESTINATION "doc")
   install (PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/readmems.exe
            DESTINATION ".")
@@ -94,8 +100,9 @@ else()
                       /usr/local/bin)
 
   if (GZIP_TOOL)
-    set (MAN "libmemsinjection.3")
-    set (MAN-GZ "${MAN}.gz")
+    set (MANNAME "${PROJECT_NAME}.3")
+    set (MAN "${CMAKE_SOURCE_DIR}/${MANNAME}")
+    set (MAN-GZ "${CMAKE_BINARY_DIR}/${MANNAME}.gz")
     add_custom_command (OUTPUT ${MAN-GZ}
                         COMMAND ${GZIP_TOOL} -c ${MAN} > ${MAN-GZ}
                         DEPENDS ${MAN}
@@ -129,6 +136,8 @@ else()
         VERSION   ${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}
   )
 
+  set (BINDIR "${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
   target_link_libraries (readmems memsinjection pthread)
 
   # set the installation destinations for the header files,
@@ -140,24 +149,24 @@ else()
 
   if (CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
     message (STATUS "Using OpenBSD-style shared library naming.")
-    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}
+    install (FILES ${BINDIR}/${PROJECT_NAME}.so
+                   ${BINDIR}/${PROJECT_NAME}.so.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     message (STATUS "Using Mac OS X-style shared library naming.")
-    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.dylib
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.${LIBMEMSINJECTION_VER_MAJOR}.dylib
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}.dylib
+    install (FILES ${BINDIR}/${PROJECT_NAME}.dylib
+                   ${BINDIR}/${PROJECT_NAME}.${LIBMEMSINJECTION_VER_MAJOR}.dylib
+                   ${BINDIR}/${PROJECT_NAME}.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}.dylib
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   else()
     message (STATUS "Using Linux/FreeBSD-style shared library naming.")
-    install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so.${LIBMEMSINJECTION_VER_MAJOR}
-                   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libmemsinjection.so.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}
+    install (FILES ${BINDIR}/${PROJECT_NAME}.so
+                   ${BINDIR}/${PROJECT_NAME}.so.${LIBMEMSINJECTION_VER_MAJOR}
+                   ${BINDIR}/${PROJECT_NAME}.so.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
@@ -175,13 +184,13 @@ else()
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   endif (GZIP_TOOL)
 
-  install (FILES "README"
-                 "LICENSE"
+  install (FILES "${CMAKE_SOURCE_DIR}/README"
+                 "${CMAKE_SOURCE_DIR}/LICENSE"
            DESTINATION "share/doc/memsinjection"
            PERMISSIONS
             OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
-  install (PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/readmems
+  install (PROGRAMS "${BINDIR}/readmems"
            DESTINATION "bin"
            PERMISSIONS
             OWNER_READ OWNER_EXECUTE OWNER_WRITE
@@ -207,8 +216,8 @@ else()
     set (CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.15)")
     set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library supporting serial communication with the Rover MEMS 1.6 engine control module")
     set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}-${CMAKE_SYSTEM_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-    set (CPACK_RESOURCE_FILE_LICENSE "LICENSE")
-    set (CPACK_RESOURCE_FILE_README "README")
+    set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+    set (CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
     include(CPack)
   endif()
 
