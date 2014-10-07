@@ -10,7 +10,6 @@ int16_t mems_write_serial(mems_info* info, uint8_t *buffer, uint16_t quantity);
 bool mems_lock(mems_info* info);
 void mems_unlock(mems_info* info);
 uint8_t temperature_value_to_degrees_f(uint8_t val);
-float kpa_to_psi(uint8_t kpa);
 
 #endif // LIBMEMS_INTERNAL_H
 

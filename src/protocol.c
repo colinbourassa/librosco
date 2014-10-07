@@ -210,14 +210,6 @@ uint8_t temperature_value_to_degrees_f(uint8_t val)
 }
 
 /**
- * Converts kilopascals into pounds per square inch.
- */
-float kpa_to_psi(uint8_t kpa)
-{
-    return ((float)kpa / 6.89475729);
-}
-
-/**
  * Sends a command to read a frame of data from the ECU, and returns the raw frame.
  */
 bool mems_read_raw(mems_info* info, mems_data_frame* frame)
@@ -266,7 +258,7 @@ bool mems_read(mems_info* info, mems_data* data)
                 data->ambient_temp_f       = temperature_value_to_degrees_f(dframe.ambient_temp);
                 data->intake_air_temp_f    = temperature_value_to_degrees_f(dframe.intake_air_temp);
                 data->fuel_temp_f          = temperature_value_to_degrees_f(dframe.fuel_temp);
-                data->map_psi              = kpa_to_psi(dframe.map_kpa);
+                data->map_kpa              = dframe.map_kpa;
                 data->battery_voltage      = dframe.battery_voltage / 10.0;
                 data->throttle_pot_voltage = dframe.throttle_pot * 0.02;
                 data->idle_switch          = ((dframe.idle_switch & 0x10) == 0) ? 0 : 1;

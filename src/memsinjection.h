@@ -127,7 +127,7 @@ typedef struct
     uint8_t ambient_temp_f;
     uint8_t intake_air_temp_f;
     uint8_t fuel_temp_f;
-    float map_psi;
+    float map_kpa;
     float battery_voltage;
     float throttle_pot_voltage;
     uint8_t idle_switch;
