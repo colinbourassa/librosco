@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <strings.h>
+#include <stdlib.h>
 #include <libgen.h>
 #include "memsinjection.h"
 
@@ -19,7 +20,8 @@ enum command_idx
     MC_AC = 7,
     MC_Coil = 8,
     MC_Injectors = 9,
-    MC_Num_Commands = 10
+    MC_Interactive = 10,
+    MC_Num_Commands = 11
 };
 
 static const char* commands[] = { "read",
@@ -31,8 +33,90 @@ static const char* commands[] = { "read",
                                   "iac-open",
                                   "ac",
                                   "coil",
-                                  "injectors"
+                                  "injectors",
+                                  "interactive"
                                 };
+
+void printbuf(uint8_t* buf, unsigned int count)
+{
+    unsigned int idx = 0;
+    while (idx < count)
+    {
+        idx += 1;
+        printf("%02X ", buf[idx-1]);
+        if (idx % 16 == 0)
+        {
+            printf("\n");
+        }
+    }
+    printf("\n");
+}
+
+bool interactive_mode(mems_info* info, uint8_t* response_buffer)
+{
+    size_t icmd_size = 8;
+    char* icmd_buf_ptr;
+    uint8_t icmd;
+    ssize_t bytes_read = 0;
+    ssize_t total_bytes_read = 0;
+    bool quit = false;
+
+    if ((icmd_buf_ptr = (char*)malloc(icmd_size)) != NULL)
+    {
+        printf("Enter a command (in hex) or 'quit'.\n> ");
+        while (!quit && (getline(&icmd_buf_ptr, &icmd_size, stdin) != -1))
+        {
+            if (strncmp(icmd_buf_ptr, "quit", 4) == 0)
+            {
+                quit = true;
+            }
+            else if (icmd_buf_ptr[0] != '\n' && icmd_buf_ptr[1] != '\r')
+            {
+                icmd = strtoul(icmd_buf_ptr, NULL, 16);
+                if ((icmd >= 0) && (icmd <= 0xff))
+                {
+                    if (write(info->sd, &icmd, 1) == 1)
+                    {
+                        bytes_read = 0;
+                        total_bytes_read = 0;
+                        do {
+                            bytes_read = read(info->sd, response_buffer + bytes_read, 1);
+                            total_bytes_read += bytes_read;
+                        } while (bytes_read > 0);
+
+                        if (total_bytes_read > 0)
+                        {
+                            printbuf(response_buffer, total_bytes_read);
+                        }
+                        else
+                        {
+                            printf("No response from ECU.\n");
+                        }
+                    }
+                    else
+                    {
+                        printf("Error: failed to write command byte to serial port.\n");
+                    }
+                }
+                else
+                {
+                    printf("Error: command must be between 0x00 and 0xFF.\n");
+                }
+                printf("> ");
+            }
+            else
+            {
+                printf("> ");
+            }
+        }
+
+        free(icmd_buf_ptr);
+    }
+    else
+    {
+        printf("Error allocating command buffer memory.\n");
+    }
+}
 
 int main(int argc, char** argv)
 {
@@ -43,11 +127,13 @@ int main(int argc, char** argv)
     libmemsinjection_version ver;
     mems_info info;
     uint8_t readval = 0;
-    uint8_t iac_limit_count = 80;
+    uint8_t iac_limit_count = 80;   // number of times to re-send an IAC move command when
+                                    // the ECU is already reporting that the valve has
+                                    // reached its requested position
     int read_loop_count = 1;
     bool read_inf = false;
-    uint8_t response_buffer[4];
-
+    uint8_t response_buffer[16384]; // this is twice as large as the micro's on-chip ROM,
+                                    // so it's probably sufficient
     ver = mems_get_lib_version();
 
     if (argc < 3)
@@ -87,7 +173,10 @@ int main(int argc, char** argv)
        }
     }
 
-    printf("Running command: %s\n", commands[cmd_idx]);
+    if (cmd_idx != MC_Interactive)
+    {
+      printf("Running command: %s\n", commands[cmd_idx]);
+    }
 
     mems_init(&info);
 
@@ -199,6 +288,10 @@ int main(int argc, char** argv)
 
             case MC_Injectors:
                 success = mems_test_actuator(&info, MEMS_TestInjectors, NULL);
+                break;
+
+            case MC_Interactive:
+                success = interactive_mode(&info, response_buffer);
                 break;
 
             default:

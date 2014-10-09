@@ -10,3 +10,15 @@ The following fields may be present in the data frame, but are not currently acc
 - Ignition switch (?)
 - Injector dead time
 
+
+Update the protocol spec with the following information:
+
+(The only tested unit was a MNE101170, which is the Mini Cooper 1.3 SPi.)
+
+Counter values are reset to default when battery power is removed
+
+Counter A (used by commands 79/7A/7B/7C): default val is 8A
+Counter B (used by commands 89/8A):       default val is 23
+Counter C (used by commands 91/92):       default val is 80
+Counter D (used by commands 93/94):       default val is 80
+
