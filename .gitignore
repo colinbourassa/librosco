@@ -16,3 +16,4 @@ cmake_install.cmake
 libmems.3.gz
 src/mems_version.h
 *.deb
+build/
