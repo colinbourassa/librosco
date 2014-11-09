@@ -301,7 +301,7 @@ int main(int argc, char** argv)
         }
         else
         {
-            printf("Error sending startup command.\n");
+            printf("Error in initialization sequence.\n");
         }
         mems_disconnect(&info);
     }
