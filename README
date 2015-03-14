@@ -1,6 +1,6 @@
 ------------
 libmemsinjection
-http://code.google.com/p/libmemsinjection
+https://github.com/colinbourassa/libmemsinjection
 ------------
 libmemsinjection is a cross-platform library that is capable of communicating
 with the Rover Modular Engine Management System (MEMS) via the ECU's diagnostic
@@ -9,17 +9,17 @@ port.
 Currently, this library only supports the protocol used by MEMS version 1.6.
 
 A special cable is required to connect to the ECU. This is detailed on the
-following web sites:
+following web site:
 
 http://alum.wpi.edu/~colinb/mems_interface.html
-Mirror: http://code.google.com/p/libmemsinjection/wiki/HardwareInterface
+Mirror: https://github.com/colinbourassa/libmemsinjection/blob/wiki/HardwareInterface.md
 
 The library itself has no user-interface and requires a front-end application
 to display data. Included in this archive is a simple command line utility
 (named "readmems") which uses the library to retrieve data and test actuators.
 The MEMSGauge project provides a graphical front-end:
 
-http://code.google.com/p/memsgauge
+https://github.com/colinbourassa/memsgauge
 
 Comments, questions, bug reports, and bugfixes should be directed to
 colin.bourassa@gmail.com. Please include the version number of the library in
