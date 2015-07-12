@@ -265,6 +265,9 @@ bool mems_read(mems_info* info, mems_data* data)
                 data->park_neutral_switch  = (dframe.park_neutral_switch == 0) ? 0 : 1;
                 data->fault_codes          = 0;
                 data->iac_position         = dframe.iac_position;
+                data->coil_time            = (((uint16_t)dframe.coil_time_hi << 8) | dframe.coil_time_lo) * 0.002;
+                data->idle_error           = ((uint16_t)dframe.idle_error_hi << 8) | dframe.idle_error_lo;
+                data->ignition_advance     = (dframe.ignition_advance * 0.5) - 24.0;
 
                 if (dframe.dtc0 & 0x01)   // coolant temp sensor fault
                     data->fault_codes     |= (1 << 0);

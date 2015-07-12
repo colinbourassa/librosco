@@ -106,15 +106,15 @@ typedef struct
     uint8_t D;
     uint8_t E;
     uint8_t iac_position;
-    uint8_t F_hi;
-    uint8_t F_lo;
+    uint8_t idle_error_hi;
+    uint8_t idle_error_lo;
+    uint8_t F;
+    uint8_t ignition_advance;
+    uint8_t coil_time_hi;
+    uint8_t coil_time_lo;
     uint8_t G;
     uint8_t H;
-    uint8_t I_hi;
-    uint8_t I_lo;
-    uint8_t J;
-    uint8_t K;
-    uint8_t L;
+    uint8_t I;
 } mems_data_frame;
 
 /**
@@ -140,6 +140,9 @@ typedef struct
      */
     uint8_t fault_codes;
     uint8_t iac_position;
+    uint16_t idle_error;
+    float ignition_advance;
+    float coil_time;
 } mems_data;
 
 /**

@@ -218,8 +218,9 @@ int main(int argc, char** argv)
                                frame.ambient_temp, frame.intake_air_temp, frame.fuel_temp, frame.map_kpa,
                                frame.battery_voltage, frame.throttle_pot, frame.idle_switch, frame.B,
                                frame.park_neutral_switch, frame.dtc0, frame.dtc1, frame.C, frame.D, frame.E,
-                               frame.iac_position, frame.F_hi, frame.F_lo, frame.G, frame.H, frame.I_hi, frame.I_lo,
-                               frame.J, frame.K, frame.L);
+                               frame.iac_position, frame.idle_error_hi, frame.idle_error_lo, frame.F,
+                               frame.ignition_advance, frame.coil_time_hi, frame.coil_time_lo,
+                               frame.G, frame.H, frame.I);
                         success = true;
                     }
                 }
