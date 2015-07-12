@@ -123,7 +123,8 @@ int main(int argc, char** argv)
     bool success = false;
     int cmd_idx = 0;
     mems_data data;
-    mems_data_frame frame;
+    mems_data_frame_80 frame80;
+    mems_data_frame_7d frame7d;
     libmemsinjection_version ver;
     mems_info info;
     uint8_t readval = 0;
@@ -211,16 +212,16 @@ int main(int argc, char** argv)
             case MC_Read_Raw:
                 while (read_inf || (read_loop_count-- > 0))
                 {
-                    if (mems_read_raw(&info, &frame))
+                    if (mems_read_raw(&info, &frame80, &frame7d))
                     {
                         printf("%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
-                               frame.A, frame.engine_rpm_hi, frame.engine_rpm_lo, frame.coolant_temp,
-                               frame.ambient_temp, frame.intake_air_temp, frame.fuel_temp, frame.map_kpa,
-                               frame.battery_voltage, frame.throttle_pot, frame.idle_switch, frame.B,
-                               frame.park_neutral_switch, frame.dtc0, frame.dtc1, frame.C, frame.D, frame.E,
-                               frame.iac_position, frame.idle_error_hi, frame.idle_error_lo, frame.F,
-                               frame.ignition_advance, frame.coil_time_hi, frame.coil_time_lo,
-                               frame.G, frame.H, frame.I);
+                               frame80.a, frame80.engine_rpm_hi, frame80.engine_rpm_lo, frame80.coolant_temp,
+                               frame80.ambient_temp, frame80.intake_air_temp, frame80.fuel_temp, frame80.map_kpa,
+                               frame80.battery_voltage, frame80.throttle_pot, frame80.idle_switch, frame80.b,
+                               frame80.park_neutral_switch, frame80.dtc0, frame80.dtc1, frame80.c, frame80.d, frame80.e,
+                               frame80.iac_position, frame80.idle_error_hi, frame80.idle_error_lo, frame80.f,
+                               frame80.ignition_advance, frame80.coil_time_hi, frame80.coil_time_lo,
+                               frame80.g, frame80.h, frame80.i);
                         success = true;
                     }
                 }

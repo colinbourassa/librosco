@@ -34,7 +34,8 @@ extern "C" {
  */
 enum mems_data_command
 {
-    MEMS_ReqData        = 0x80,
+    MEMS_ReqData7D      = 0x7D,
+    MEMS_ReqData80      = 0x80,
     MEMS_ClearFaults    = 0xCC,
     MEMS_Heartbeat      = 0xF4,
     MEMS_GetIACPosition = 0xFB
@@ -78,16 +79,50 @@ enum mems_actuator_command
 typedef enum mems_actuator_command actuator_cmd;
 
 /**
- * Data sequence returned by the ECU in reply to the command 0x80.
- *
- * Note that the grouping of bytes 19-20 and 23-24 into 16-bit fields is due
- * only to the observed transmission line timing. This is probably accurate, as
- * bytes 1-2 are grouped similarly, and do indeed represent a single 16-bit
- * value.
+ * Data sequence returned by the ECU in reply to the command 0x7D.
  */
 typedef struct
 {
-    uint8_t A;
+  uint8_t a;
+  uint8_t b;
+  uint8_t c;
+  uint8_t d;
+  uint8_t e;
+  uint8_t f;
+  uint8_t g;
+  uint8_t lambda_voltage;
+  uint8_t i;
+  uint8_t j;
+  uint8_t closed_loop;
+  uint8_t l;
+  uint8_t fuel_trim;
+  uint8_t n;
+  uint8_t o;
+  uint8_t idle_base_pos;
+  uint8_t q;
+  uint8_t r;
+  uint8_t s;
+  uint8_t t;
+  uint8_t u;
+  uint8_t v;
+  uint8_t w;
+  uint8_t x;
+  uint8_t y;
+  uint8_t z;
+  uint8_t aa;
+  uint8_t bb;
+  uint8_t cc;
+  uint8_t dd;
+  uint8_t ee;
+  uint8_t ff;
+} mems_data_frame_7d;
+
+/**
+ * Data sequence returned by the ECU in reply to the command 0x80.
+ */
+typedef struct
+{
+    uint8_t a;
     uint8_t engine_rpm_hi;
     uint8_t engine_rpm_lo;
     uint8_t coolant_temp;
@@ -98,24 +133,24 @@ typedef struct
     uint8_t battery_voltage;
     uint8_t throttle_pot;
     uint8_t idle_switch;
-    uint8_t B;
+    uint8_t b;
     uint8_t park_neutral_switch;
     uint8_t dtc0;
     uint8_t dtc1;
-    uint8_t C;
-    uint8_t D;
-    uint8_t E;
+    uint8_t c;
+    uint8_t d;
+    uint8_t e;
     uint8_t iac_position;
     uint8_t idle_error_hi;
     uint8_t idle_error_lo;
-    uint8_t F;
+    uint8_t f;
     uint8_t ignition_advance;
     uint8_t coil_time_hi;
     uint8_t coil_time_lo;
-    uint8_t G;
-    uint8_t H;
-    uint8_t I;
-} mems_data_frame;
+    uint8_t g;
+    uint8_t h;
+    uint8_t i;
+} mems_data_frame_80;
 
 /**
  * Compact structure containing only the relevant data from the ECU.
@@ -143,6 +178,10 @@ typedef struct
     uint16_t idle_error;
     float ignition_advance;
     float coil_time;
+    uint16_t lambda_voltage_mv;
+    uint8_t fuel_trim;
+    uint8_t closed_loop;
+    uint8_t idle_base_pos;
 } mems_data;
 
 /**
@@ -182,7 +221,7 @@ void mems_cleanup(mems_info* info);
 bool mems_connect(mems_info* info, const char* devPath);
 void mems_disconnect(mems_info* info);
 bool mems_is_connected(mems_info* info);
-bool mems_read_raw(mems_info* info, mems_data_frame* frame);
+bool mems_read_raw(mems_info* info, mems_data_frame_80* frame80, mems_data_frame_7d* frame7d);
 bool mems_read(mems_info* info, mems_data* data);
 bool mems_read_iac_position(mems_info* info, uint8_t* position);
 bool mems_move_iac(mems_info* info, uint8_t desired_pos);
