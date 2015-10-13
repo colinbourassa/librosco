@@ -1,4 +1,4 @@
-// libmemsinjection - a communications library for the Rover MEMS
+// librosco - a communications library for the Rover MEMS
 //
 // setup.c: This file contains routines that perform the
 //          setup/initialization of the library and the
@@ -19,9 +19,9 @@
   #include <arpa/inet.h>
 #endif
 
-#include "memsinjection.h"
-#include "mems_internal.h"
-#include "mems_version.h"
+#include "rosco.h"
+#include "rosco_internal.h"
+#include "rosco_version.h"
 
 /**
  * Sets initial values in the state-info struct.
@@ -65,15 +65,15 @@ void mems_cleanup(mems_info *info)
 
 /**
  * Returns version information for this build of the library.
- * @return Version of this build of libmemsinjection
+ * @return Version of this build of librosco
  */
-libmemsinjection_version mems_get_lib_version()
+librosco_version mems_get_lib_version()
 {
-    libmemsinjection_version ver;
+    librosco_version ver;
 
-    ver.major = LIBMEMSINJECTION_VER_MAJOR;
-    ver.minor = LIBMEMSINJECTION_VER_MINOR;
-    ver.patch = LIBMEMSINJECTION_VER_PATCH;
+    ver.major = LIBROSCO_VER_MAJOR;
+    ver.minor = LIBROSCO_VER_MINOR;
+    ver.patch = LIBROSCO_VER_PATCH;
 
     return ver;
 }

@@ -6,7 +6,7 @@
 #include <strings.h>
 #include <stdlib.h>
 #include <libgen.h>
-#include "memsinjection.h"
+#include "rosco.h"
 
 enum command_idx
 {
@@ -125,7 +125,7 @@ int main(int argc, char** argv)
     mems_data data;
     mems_data_frame_80 frame80;
     mems_data_frame_7d frame7d;
-    libmemsinjection_version ver;
+    librosco_version ver;
     mems_info info;
     uint8_t readval = 0;
     uint8_t iac_limit_count = 80;   // number of times to re-send an IAC move command when
@@ -139,7 +139,7 @@ int main(int argc, char** argv)
 
     if (argc < 3)
     {
-        printf("readmems using libmemsinjection v%d.%d.%d\n", ver.major, ver.minor, ver.patch);
+        printf("readmems using librosco v%d.%d.%d\n", ver.major, ver.minor, ver.patch);
         printf("Usage: %s <serial device> <command> [read-loop-count]\n", basename(argv[0]));
         printf(" where <command> is one of the following:\n");
         for (cmd_idx = 0; cmd_idx < MC_Num_Commands; ++cmd_idx)

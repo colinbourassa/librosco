@@ -2,7 +2,7 @@
 #define MEMSINJECTION_H
 
 /** \file mems.h
- * Header file defining the libmemsinjection functions, structs, and enums.
+ * Header file defining the librosco functions, structs, and enums.
  */
 
 #include <stdint.h>
@@ -195,7 +195,7 @@ typedef struct
   uint8_t minor;
   //! Patch version number
   uint8_t patch;
-} libmemsinjection_version;
+} librosco_version;
 
 /**
  * Contains information about the state of the current connection to the ECU.
@@ -229,7 +229,7 @@ bool mems_test_actuator(mems_info* info, actuator_cmd cmd, uint8_t* data);
 bool mems_clear_faults(mems_info* info);
 bool mems_heartbeat(mems_info* info);
 
-libmemsinjection_version mems_get_lib_version();
+librosco_version mems_get_lib_version();
 
 /* Closing brace for 'extern "C"' */
 #ifdef __cplusplus

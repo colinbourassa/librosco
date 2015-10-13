@@ -1,4 +1,4 @@
-// libmemsinjection - a communications library for the Rover MEMS ECU
+// librosco - a communications library for the Rover MEMS ECU
 //
 // protocol.c: This file contains routines specific to handling
 //             the software protocol used by the ECU over its
@@ -18,8 +18,8 @@
   #include <string.h>
 #endif
 
-#include "memsinjection.h"
-#include "mems_internal.h"
+#include "rosco.h"
+#include "rosco_internal.h"
 
 /**
  * Reads bytes from the serial device using an OS-specific call.

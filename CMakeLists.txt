@@ -1,16 +1,16 @@
 cmake_minimum_required (VERSION 2.8)
-project (libmemsinjection)
+project (librosco)
 
-set (LIBMEMSINJECTION_VER_MAJOR 0)
-set (LIBMEMSINJECTION_VER_MINOR 1)
-set (LIBMEMSINJECTION_VER_PATCH 3)
+set (LIBROSCO_VER_MAJOR 0)
+set (LIBROSCO_VER_MINOR 1)
+set (LIBROSCO_VER_PATCH 3)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 set (SOURCE_SUBDIR "src")
 
 set (CPACK_SOURCE_GENERATOR "TGZ" "ZIP")
-set (CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}-src")
+set (CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}-src")
 set (CPACK_SOURCE_IGNORE_FILES
       ".*deb$"
       ".*zip$"
@@ -30,11 +30,11 @@ set (CPACK_SOURCE_IGNORE_FILES
       "install_manifest.txt"
       "Makefile"
       "bin/lib.*"
-      "src/mems_version.h$")
+      "src/rosco_version.h$")
 
 configure_file (
-  "${SOURCE_SUBDIR}/mems_version.h.in"
-  "${SOURCE_SUBDIR}/mems_version.h"
+  "${SOURCE_SUBDIR}/rosco_version.h.in"
+  "${SOURCE_SUBDIR}/rosco_version.h"
   )
 
 include_directories (
@@ -43,8 +43,8 @@ include_directories (
   "${CMAKE_BINARY_DIR}/src"
   )
 
-add_library (memsinjection SHARED ${SOURCE_SUBDIR}/setup.c
-                                  ${SOURCE_SUBDIR}/protocol.c)
+add_library (rosco SHARED ${SOURCE_SUBDIR}/setup.c
+                          ${SOURCE_SUBDIR}/protocol.c)
 add_executable (readmems ${SOURCE_SUBDIR}/readmems.c)
 
 if (MINGW)
@@ -61,19 +61,19 @@ if (MINGW)
   file (WRITE "${CMAKE_BINARY_DIR}/README.TXT" ${README_CONTENTS})
   file (WRITE "${CMAKE_BINARY_DIR}/LICENSE.TXT" ${LICENSE_CONTENTS})
 
-  message (STATUS "Defaulting installation path to: $ENV{SystemDrive}/memsinjection")
-  set (CMAKE_INSTALL_PREFIX "$ENV{SystemDrive}/memsinjection")
+  message (STATUS "Defaulting installation path to: $ENV{SystemDrive}/mems-rosco")
+  set (CMAKE_INSTALL_PREFIX "$ENV{SystemDrive}/mems-rosco")
 
   set_target_properties (
-    memsinjection
+    rosco
       PROPERTIES
-        SOVERSION ${LIBMEMSINJECTION_VER_MAJOR}
-        VERSION ${LIBMEMSINJECTION_VER_MAJOR}
+        SOVERSION ${LIBROSCO_VER_MAJOR}
+        VERSION ${LIBROSCO_VER_MAJOR}
   )
 
-  target_link_libraries (readmems memsinjection)
+  target_link_libraries (readmems rosco)
 
-  install (FILES ${SOURCE_SUBDIR}/memsinjection.h
+  install (FILES ${SOURCE_SUBDIR}/rosco.h
            DESTINATION "include")
   install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PROJECT_NAME}.dll
            DESTINATION ".")
@@ -86,7 +86,7 @@ if (MINGW)
   set (CPACK_GENERATOR "ZIP")
   set (CPACK_PACKAGE_NAME ${PROJECT_NAME})
   set (CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
-  set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}-${CMAKE_SYSTEM_NAME}")
+  set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}-${CMAKE_SYSTEM_NAME}")
   include (CPack)
 
 else()
@@ -130,19 +130,19 @@ else()
   endif()
 
   set_target_properties (
-    memsinjection
+    rosco
       PROPERTIES
-        SOVERSION ${LIBMEMSINJECTION_VER_MAJOR}
-        VERSION   ${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}
+        SOVERSION ${LIBROSCO_VER_MAJOR}
+        VERSION   ${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}
   )
 
   set (BINDIR "${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
-  target_link_libraries (readmems memsinjection pthread)
+  target_link_libraries (readmems rosco pthread)
 
   # set the installation destinations for the header files,
   # shared library binaries, and reference utility
-  install (FILES ${SOURCE_SUBDIR}/memsinjection.h
+  install (FILES ${SOURCE_SUBDIR}/rosco.h
            DESTINATION "include"
            PERMISSIONS
             OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
@@ -150,29 +150,29 @@ else()
   if (CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
     message (STATUS "Using OpenBSD-style shared library naming.")
     install (FILES ${BINDIR}/${PROJECT_NAME}.so
-                   ${BINDIR}/${PROJECT_NAME}.so.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}
+                   ${BINDIR}/${PROJECT_NAME}.so.${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     message (STATUS "Using Mac OS X-style shared library naming.")
     install (FILES ${BINDIR}/${PROJECT_NAME}.dylib
-                   ${BINDIR}/${PROJECT_NAME}.${LIBMEMSINJECTION_VER_MAJOR}.dylib
-                   ${BINDIR}/${PROJECT_NAME}.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}.dylib
+                   ${BINDIR}/${PROJECT_NAME}.${LIBROSCO_VER_MAJOR}.dylib
+                   ${BINDIR}/${PROJECT_NAME}.${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}.dylib
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   else()
     message (STATUS "Using Linux/FreeBSD-style shared library naming.")
     install (FILES ${BINDIR}/${PROJECT_NAME}.so
-                   ${BINDIR}/${PROJECT_NAME}.so.${LIBMEMSINJECTION_VER_MAJOR}
-                   ${BINDIR}/${PROJECT_NAME}.so.${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}
+                   ${BINDIR}/${PROJECT_NAME}.so.${LIBROSCO_VER_MAJOR}
+                   ${BINDIR}/${PROJECT_NAME}.so.${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}
              DESTINATION "lib"
              PERMISSIONS
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   endif()
 
-  install (DIRECTORY DESTINATION "share/doc/memsinjection" DIRECTORY_PERMISSIONS
+  install (DIRECTORY DESTINATION "share/doc/rosco" DIRECTORY_PERMISSIONS
             OWNER_READ OWNER_EXECUTE OWNER_WRITE
             GROUP_READ GROUP_EXECUTE
             WORLD_READ WORLD_EXECUTE)
@@ -186,7 +186,7 @@ else()
 
   install (FILES "${CMAKE_SOURCE_DIR}/README"
                  "${CMAKE_SOURCE_DIR}/LICENSE"
-           DESTINATION "share/doc/memsinjection"
+           DESTINATION "share/doc/rosco"
            PERMISSIONS
             OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
@@ -207,15 +207,15 @@ else()
 
     set (CPACK_GENERATOR "DEB")
     set (CPACK_PACKAGE_NAME ${PROJECT_NAME})
-    set (CPACK_PACKAGE_VERSION_MAJOR ${LIBMEMSINJECTION_VER_MAJOR})
-    set (CPACK_PACKAGE_VERSION_MINOR ${LIBMEMSINJECTION_VER_MINOR})
-    set (CPACK_PACKAGE_VERSION_PATCH ${LIBMEMSINJECTION_VER_PATCH})
+    set (CPACK_PACKAGE_VERSION_MAJOR ${LIBROSCO_VER_MAJOR})
+    set (CPACK_PACKAGE_VERSION_MINOR ${LIBROSCO_VER_MINOR})
+    set (CPACK_PACKAGE_VERSION_PATCH ${LIBROSCO_VER_PATCH})
     set (CPACK_DEBIAN_PACKAGE_NAME ${CPACK_PACKAGE_NAME})
     set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Colin Bourassa <colin.bourassa@gmail.com>")
     set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
     set (CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.15)")
     set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library supporting serial communication with the Rover MEMS 1.6 engine control module")
-    set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBMEMSINJECTION_VER_MAJOR}.${LIBMEMSINJECTION_VER_MINOR}.${LIBMEMSINJECTION_VER_PATCH}-${CMAKE_SYSTEM_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+    set (CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}-${CMAKE_SYSTEM_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
     set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
     set (CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
     include(CPack)

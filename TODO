@@ -1,9 +1,0 @@
-The following fields may be present in the data frame, but are not currently accounted for:
-- O2 sensor voltage
-- Fueling correction feedback
-    (with >100% indicating an attempt to compensate for fueling being too lean,
-     and <100% attempting to compensate for fueling being too rich)
-- Ignition advance
-- Ignition switch (?)
-- Injector dead time
-
