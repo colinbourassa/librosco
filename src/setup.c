@@ -149,10 +149,6 @@ bool mems_openserial(mems_info *info, const char *devPath)
     bool retVal = false;
 
 #if defined(linux) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
-    // Most UNIXes can handle the serial port in a similar fashion (using
-    // the termios interface.) The only major difference between them is
-    // the assignment of the nonstandard baud rate, which is done directly
-    // into the termios struct for BSD, but via ioctls for both Linux and OS X.
 
     struct termios newtio;
     bool success = true;
