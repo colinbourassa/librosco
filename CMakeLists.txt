@@ -47,6 +47,8 @@ add_library (rosco SHARED ${SOURCE_SUBDIR}/setup.c
                           ${SOURCE_SUBDIR}/protocol.c)
 add_executable (readmems ${SOURCE_SUBDIR}/readmems.c)
 
+set (BINDIR "${CMAKE_BINARY_DIR}/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
 if (MINGW)
 
   message (STATUS "Found Windows/MinGW platform.")
@@ -73,15 +75,15 @@ if (MINGW)
 
   target_link_libraries (readmems rosco)
 
-  install (FILES ${SOURCE_SUBDIR}/rosco.h
+  install (FILES "${SOURCE_SUBDIR}/rosco.h"
            DESTINATION "include")
-  install (FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PROJECT_NAME}.dll
-           DESTINATION ".")
-  install (FILES "${CMAKE_BINARY_DIR}/README.txt"
-                 "${CMAKE_BINARY_DIR}/LICENSE.txt"
+  install (FILES "${BINDIR}/${LIBNAME}"
+           DESTINATION "bin")
+  install (FILES "${CMAKE_BINARY_DIR}/README.TXT"
+                 "${CMAKE_BINARY_DIR}/LICENSE.TXT"
            DESTINATION "doc")
-  install (PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/readmems.exe
-           DESTINATION ".")
+  install (PROGRAMS "${BINDIR}/readmems.exe"
+           DESTINATION "bin")
 
   set (CPACK_GENERATOR "ZIP")
   set (CPACK_PACKAGE_NAME ${PROJECT_NAME})
