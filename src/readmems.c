@@ -37,6 +37,7 @@ static const char* commands[] = { "read",
                                   "interactive"
                                 };
 
+
 void printbuf(uint8_t* buf, unsigned int count)
 {
     unsigned int idx = 0;
@@ -52,6 +53,45 @@ void printbuf(uint8_t* buf, unsigned int count)
     printf("\n");
 }
 
+
+int16_t readserial(mems_info* info, uint8_t* buffer, uint16_t quantity)
+{
+  int16_t bytesread = -1;
+#if defined (WIN32)
+  DWORD w32BytesRead = 0;
+
+  if ((ReadFile(info->sd, (UCHAR*) buffer, quantity, &w32BytesRead, NULL) == TRUE) &&
+      (w32BytesRead > 0))
+  {
+    bytesread = w32BytesRead;
+  }
+#else
+  bytesread = read(info->sd, buffer, quantity);
+#endif
+  return bytesread;
+}
+
+
+int16_t writeserial(mems_info* info, uint8_t* buffer, uint16_t quantity)
+{
+  int16_t byteswritten = -1;
+
+#if defined(WIN32)
+  DWORD w32BytesWritten = 0;
+
+  if ((WriteFile(info->sd, (UCHAR*) buffer, quantity, &w32BytesWritten, NULL) == TRUE) &&
+      (w32BytesWritten == quantity))
+  {
+    byteswritten = w32BytesWritten;
+  }
+#else
+  byteswritten = write(info->sd, buffer, quantity);
+#endif
+
+  return byteswritten;
+}
+
+
 bool interactive_mode(mems_info* info, uint8_t* response_buffer)
 {
     size_t icmd_size = 8;
@@ -64,7 +104,7 @@ bool interactive_mode(mems_info* info, uint8_t* response_buffer)
     if ((icmd_buf_ptr = (char*)malloc(icmd_size)) != NULL)
     {
         printf("Enter a command (in hex) or 'quit'.\n> ");
-        while (!quit && (getline(&icmd_buf_ptr, &icmd_size, stdin) != -1))
+        while (!quit && (fgets(icmd_buf_ptr, icmd_size, stdin) != NULL))
         {
             if (strncmp(icmd_buf_ptr, "quit", 4) == 0)
             {
@@ -75,12 +115,12 @@ bool interactive_mode(mems_info* info, uint8_t* response_buffer)
                 icmd = strtoul(icmd_buf_ptr, NULL, 16);
                 if ((icmd >= 0) && (icmd <= 0xff))
                 {
-                    if (write(info->sd, &icmd, 1) == 1)
+                    if (writeserial(info, &icmd, 1) == 1)
                     {
                         bytes_read = 0;
                         total_bytes_read = 0;
                         do {
-                            bytes_read = read(info->sd, response_buffer + bytes_read, 1);
+                            bytes_read = readserial(info, response_buffer + bytes_read, 1);
                             total_bytes_read += bytes_read;
                         } while (bytes_read > 0);
 
@@ -135,6 +175,8 @@ int main(int argc, char** argv)
     bool read_inf = false;
     uint8_t response_buffer[16384]; // this is twice as large as the micro's on-chip ROM,
                                     // so it's probably sufficient
+    char win32devicename[16];
+
     ver = mems_get_lib_version();
 
     if (argc < 3)
@@ -181,7 +223,14 @@ int main(int argc, char** argv)
 
     mems_init(&info);
 
+#if defined(WIN32)
+    // correct for microsoft's legacy nonsense by prefixing with "\\.\"
+    strcpy(win32devicename, "\\\\.\\");
+    strncat(win32devicename, argv[1], 16);
+    if (mems_connect(&info, win32devicename))
+#else
     if (mems_connect(&info, argv[1]))
+#endif
     {
         if (mems_init_link(&info, response_buffer))
         {
@@ -309,7 +358,11 @@ int main(int argc, char** argv)
     }
     else
     {
+#if defined(WIN32)
+        printf("Error: could not open serial device (%s).\n", win32devicename);
+#else
         printf("Error: could not open serial device (%s).\n", argv[1]);
+#endif
     }
 
     mems_cleanup(&info);
