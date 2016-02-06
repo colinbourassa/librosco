@@ -83,7 +83,7 @@ typedef enum mems_actuator_command actuator_cmd;
  */
 typedef struct
 {
-  uint8_t a;
+  uint8_t bytes_in_frame;
   uint8_t b;
   uint8_t c;
   uint8_t d;
@@ -122,7 +122,7 @@ typedef struct
  */
 typedef struct
 {
-    uint8_t a;
+    uint8_t bytes_in_frame;
     uint8_t engine_rpm_hi;
     uint8_t engine_rpm_lo;
     uint8_t coolant_temp;
