@@ -1,5 +1,5 @@
-#ifndef MEMSINJECTION_H
-#define MEMSINJECTION_H
+#ifndef ROSCO_H
+#define ROSCO_H
 
 /** \file mems.h
  * Header file defining the librosco functions, structs, and enums.
