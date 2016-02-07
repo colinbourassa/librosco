@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@INSTALL_LIB_DIR@
+includedir=@INSTALL_INC_DIR@
+
+Name: librosco
+Description: librosco engine management diagnosic library
+Version: @LIBROSCO_VERSION@
+
+Requires:
+Libs: -L${libdir} -lrosco
+Cflags: -I${includedir}
