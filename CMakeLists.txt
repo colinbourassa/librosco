@@ -8,7 +8,7 @@ set(PROJECT_URL "https://github.com/colinbourassa/librosco")
 
 set (LIBROSCO_VER_MAJOR 0)
 set (LIBROSCO_VER_MINOR 1)
-set (LIBROSCO_VER_PATCH 8)
+set (LIBROSCO_VER_PATCH 9)
 set (LIBROSCO_VERSION "${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}")
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
@@ -58,11 +58,11 @@ set (CPACK_SOURCE_IGNORE_FILES
       "src/rosco_version.h$")
 
 option (ENABLE_DOC_INSTALL "Enables installation of documentation (README, LICENSE, manpage) to the appropriate locations" ON)
-option (ENABLE_TESTAPP_INSTALL "Enables installation of the readmems utility to the appropriate locations" ON)
+option (ENABLE_TESTAPP_INSTALL "Enables installation of the readmems utility as a test application named test-${PROJECT_NAME}" OFF)
 
 configure_file (
   "${SOURCE_SUBDIR}/rosco_version.h.in"
-  "${SOURCE_SUBDIR}/rosco_version.h"
+  "${CMAKE_BINARY_DIR}/rosco_version.h"
   )
 
 set (LIBROSCO_PC "${CMAKE_BINARY_DIR}/librosco.pc")
@@ -70,8 +70,8 @@ configure_file ("${CMAKE_SOURCE_DIR}/librosco.pc.cmakein" ${LIBROSCO_PC} @ONLY)
 
 include_directories (
   "${CMAKE_SOURCE_DIR}"
+  "${CMAKE_BINARY_DIR}"
   "${CMAKE_SOURCE_DIR}/src"
-  "${CMAKE_BINARY_DIR}/src"
   )
 
 if (BUILD_STATIC STREQUAL "ON")
@@ -117,7 +117,7 @@ if (MINGW)
   target_link_libraries (readmems rosco)
 
   install (FILES "${SOURCE_SUBDIR}/rosco.h"
-                 "${SOURCE_SUBDIR}/rosco_version.h"
+                 "${CMAKE_BINARY_DIR}/rosco_version.h"
            DESTINATION "${INSTALL_INC_DIR}")
   install (FILES "${BINDIR}/${LIBNAME}"
            DESTINATION "${LIB_DESTINATION_DIR}")
@@ -134,12 +134,15 @@ if (MINGW)
   else()
     message (STATUS "Skipping installation of documentation.")
   endif()
+
   if (ENABLE_TESTAPP_INSTALL)
-    message (STATUS "Install will include readmems.exe.")
+    message (STATUS "Install will include readmems.exe as test-${PROJECT_NAME}.exe in ${INSTALL_BIN_DIR}/.")
+    install (PROGRAMS "${BINDIR}/readmems.exe"
+             DESTINATION "${INSTALL_BIN_DIR}"
+             RENAME "test-${PROJECT_NAME}.exe")
+  else()
     install (PROGRAMS "${BINDIR}/readmems.exe"
              DESTINATION "${INSTALL_BIN_DIR}")
-  else()
-    message (STATUS "Skipping installation of readmems.exe.")
   endif()
 
   set (CPACK_GENERATOR "ZIP")
@@ -191,7 +194,7 @@ else()
   # set the installation destinations for the header files,
   # shared library binaries, and reference utility
   install (FILES "${SOURCE_SUBDIR}/rosco.h"
-                 "${SOURCE_SUBDIR}/rosco_version.h"
+                 "${CMAKE_BINARY_DIR}/rosco_version.h"
            DESTINATION "${INSTALL_INC_DIR}"
            PERMISSIONS
             OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
@@ -242,14 +245,12 @@ else()
               OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
   endif()
 
-  if (ENABLE_TESTAPP_INSTALL)
-    install (PROGRAMS "${BINDIR}/readmems"
-             DESTINATION "${INSTALL_BIN_DIR}"
-             PERMISSIONS
-              OWNER_READ OWNER_EXECUTE OWNER_WRITE
-              GROUP_READ GROUP_EXECUTE
-              WORLD_READ WORLD_EXECUTE)
-  endif()
+  install (PROGRAMS "${BINDIR}/readmems"
+           DESTINATION "${INSTALL_BIN_DIR}"
+           PERMISSIONS
+            OWNER_READ OWNER_EXECUTE OWNER_WRITE
+            GROUP_READ GROUP_EXECUTE
+            WORLD_READ WORLD_EXECUTE)
 
   if (CMAKE_SYSTEM_NAME MATCHES "Linux")
     # set the architecture flag that will be used by the Debian package builder

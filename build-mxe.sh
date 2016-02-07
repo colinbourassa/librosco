@@ -19,5 +19,5 @@ cmake .. \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_TOOLCHAIN_FILE=$MXE/share/cmake/mxe-conf.cmake \
   -DENABLE_DOC_INSTALL=off \
-  -DENABLE_TESTAPP_INSTALL=off
+  -DENABLE_TESTAPP_INSTALL=on
 
