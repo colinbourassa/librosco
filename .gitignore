@@ -4,7 +4,7 @@ CMakeFiles/
 CPackConfig.cmake
 CPackSourceConfig.cmake
 _CPack_Packages/
-src/mems_version.h
+src/rosco_version.h
 bin/
 Makefile
 cmake_install.cmake
@@ -13,7 +13,6 @@ install_manifest.txt
 Makefile
 bin/
 cmake_install.cmake
-libmems.3.gz
-src/mems_version.h
+librosco.3.gz
 *.deb
 build/
