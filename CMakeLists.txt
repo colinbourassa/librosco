@@ -58,7 +58,7 @@ set (CPACK_SOURCE_IGNORE_FILES
       "src/rosco_version.h$")
 
 option (ENABLE_DOC_INSTALL "Enables installation of documentation (README, LICENSE, manpage) to the appropriate locations" ON)
-option (ENABLE_TESTAPP_INSTALL "Enables installation of the readmems utility as a test application named test-${PROJECT_NAME}" OFF)
+option (ENABLE_TESTAPP_INSTALL "Enables installation of the readmems utility" ON)
 
 configure_file (
   "${SOURCE_SUBDIR}/rosco_version.h.in"
@@ -141,13 +141,11 @@ if (MINGW)
   endif()
 
   if (ENABLE_TESTAPP_INSTALL)
-    message (STATUS "Install will include readmems.exe as test-${PROJECT_NAME}.exe in ${INSTALL_BIN_DIR}/.")
-    install (PROGRAMS "${BINDIR}/readmems.exe"
-             DESTINATION "${INSTALL_BIN_DIR}"
-             RENAME "test-${PROJECT_NAME}.exe")
-  else()
+    message (STATUS "Install will include readmems utility.")
     install (PROGRAMS "${BINDIR}/readmems.exe"
              DESTINATION "${INSTALL_BIN_DIR}")
+  else()
+    message (STATUS "Skipping installation of readmems.exe.")
   endif()
 
   set (CPACK_GENERATOR "ZIP")
