@@ -85,12 +85,12 @@ else()
   if (MINGW)
     set (LIBNAME "${PROJECT_NAME}.dll")
     set (LIB_DESTINATION_DIR "${INSTALL_BIN_DIR}")
+    set (IMPORTLIBNAME "${PROJECT_NAME}.dll.a")
   else()
     set (LIBNAME "${PROJECT_NAME}.so")
     set (LIB_DESTINATION_DIR "${INSTALL_LIB_DIR}")
   endif()
 endif()
-message (STATUS "Install location for library files is ${LIB_DESTINATION_DIR}")
 
 add_executable (readmems ${SOURCE_SUBDIR}/readmems.c)
 
@@ -123,6 +123,11 @@ if (MINGW)
            DESTINATION "${LIB_DESTINATION_DIR}")
   install (FILES "${LIBROSCO_PC}"
            DESTINATION "${INSTALL_PKGCONFIG_DIR}")
+
+  if (NOT BUILD_STATIC STREQUAL "ON")
+    install (FILES "${BINDIR}/${IMPORTLIBNAME}"
+             DESTINATION "${INSTALL_LIB_DIR}")
+  endif()
 
   # MXE requires that documentation and test applications not be installed
   # by default, so we provide a couple env vars to control this
