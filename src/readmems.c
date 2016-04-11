@@ -24,7 +24,7 @@ enum command_idx
   MC_Num_Commands = 11
 };
 
-static const char *commands[] = { "read",
+static const char* commands[] = { "read",
   "read-raw",
   "read-iac",
   "ptc",
@@ -38,7 +38,7 @@ static const char *commands[] = { "read",
 };
 
 
-void printbuf(uint8_t * buf, unsigned int count)
+void printbuf(uint8_t* buf, unsigned int count)
 {
   unsigned int idx = 0;
 
@@ -55,7 +55,7 @@ void printbuf(uint8_t * buf, unsigned int count)
 }
 
 
-int16_t readserial(mems_info * info, uint8_t * buffer, uint16_t quantity)
+int16_t readserial(mems_info* info, uint8_t* buffer, uint16_t quantity)
 {
   int16_t bytesread = -1;
 
@@ -69,18 +69,19 @@ int16_t readserial(mems_info * info, uint8_t * buffer, uint16_t quantity)
 #else
   bytesread = read(info->sd, buffer, quantity);
 #endif
+
   return bytesread;
 }
 
 
-int16_t writeserial(mems_info * info, uint8_t * buffer, uint16_t quantity)
+int16_t writeserial(mems_info* info, uint8_t* buffer, uint16_t quantity)
 {
   int16_t byteswritten = -1;
 
 #if defined(WIN32)
   DWORD w32BytesWritten = 0;
 
-  if ((WriteFile(info->sd, (UCHAR *) buffer, quantity, &w32BytesWritten, NULL) == TRUE) &&
+  if ((WriteFile(info->sd, (UCHAR*) buffer, quantity, &w32BytesWritten, NULL) == TRUE) &&
       (w32BytesWritten == quantity))
   {
     byteswritten = w32BytesWritten;
@@ -93,21 +94,22 @@ int16_t writeserial(mems_info * info, uint8_t * buffer, uint16_t quantity)
 }
 
 
-bool interactive_mode(mems_info * info, uint8_t * response_buffer)
+bool interactive_mode(mems_info* info, uint8_t* response_buffer)
 {
   size_t icmd_size = 8;
-  char *icmd_buf_ptr;
+  char* icmd_buf_ptr;
   uint8_t icmd;
   ssize_t bytes_read = 0;
   ssize_t total_bytes_read = 0;
   bool quit = false;
 
-  if ((icmd_buf_ptr = (char *)malloc(icmd_size)) != NULL)
+  if ((icmd_buf_ptr = (char*)malloc(icmd_size)) != NULL)
   {
     printf("Enter a command (in hex) or 'quit'.\n> ");
     while (!quit && (fgets(icmd_buf_ptr, icmd_size, stdin) != NULL))
     {
-      if (strncmp(icmd_buf_ptr, "quit", 4) == 0)
+      if ((strncmp(icmd_buf_ptr, "q", 1) == 0) ||
+          (strncmp(icmd_buf_ptr, "quit", 4) == 0))
       {
         quit = true;
       }
@@ -122,7 +124,7 @@ bool interactive_mode(mems_info * info, uint8_t * response_buffer)
             total_bytes_read = 0;
             do
             {
-              bytes_read = readserial(info, response_buffer + bytes_read, 1);
+              bytes_read = readserial(info, response_buffer + total_bytes_read, 1);
               total_bytes_read += bytes_read;
             } while (bytes_read > 0);
 
