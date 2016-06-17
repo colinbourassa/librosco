@@ -18,10 +18,10 @@ Currently, this library only supports the protocol used by MEMS version 1.6.
 A special cable is required to connect to the ECU. This is detailed on the
 following web site:
 
-http://alum.wpi.edu/~colinb/mems_interface.html
+http://alum.wpi.edu/~colinb/rover-mems-16-diagnostic-protocol.html
 Mirror: https://github.com/colinbourassa/librosco/blob/wiki/HardwareInterface.md
 
-The library itself has no user-interface and requires a front-end application
+The library itself has no user interface and requires a front-end application
 to display data. Included in this archive is a simple command line utility
 (named "readmems") which uses the library to retrieve data and test actuators.
 The MEMSGauge project provides a graphical front-end:
