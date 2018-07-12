@@ -254,12 +254,12 @@ int main(int argc, char **argv)
         {
           if (mems_read(&info, &data))
           {
-            printf("RPM: %u\nCoolant (deg F): %u\nAmbient (deg F): %u\nIntake air (deg F): %u\n"
-                   "Fuel temp (deg F): %u\nMAP (kPa): %f\nMain voltage: %f\nThrottle pot voltage: %f\n"
+            printf("RPM: %u\nCoolant (deg C): %u\nAmbient (deg C): %u\nIntake air (deg C): %u\n"
+                   "Fuel temp (deg C): %u\nMAP (kPa): %f\nMain voltage: %f\nThrottle pot voltage: %f\n"
                    "Idle switch: %u\nPark/neutral switch: %u\nFault codes: %u\nIAC position: %u\n"
                    "-------------\n",
-                   data.engine_rpm, data.coolant_temp_f, data.ambient_temp_f,
-                   data.intake_air_temp_f, data.fuel_temp_f, data.map_kpa, data.battery_voltage,
+                   data.engine_rpm, data.coolant_temp_c, data.ambient_temp_c,
+                   data.intake_air_temp_c, data.fuel_temp_c, data.map_kpa, data.battery_voltage,
                    data.throttle_pot_voltage, data.idle_switch, data.park_neutral_switch,
                    data.fault_codes, data.iac_position);
             success = true;

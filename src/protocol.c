@@ -202,15 +202,6 @@ void mems_unlock(mems_info* info)
 }
 
 /**
- * Converts the temperature value used by the ECU into degrees Fahrenheit.
- */
-uint8_t temperature_value_to_degrees_f(uint8_t val)
-{
-  uint8_t degrees_c = val - 55;
-  return (uint8_t)((float)degrees_c * 1.8 + 32);
-}
-
-/**
  * Sends a command to read a frame of data from the ECU, and returns the raw frame.
  */
 bool mems_read_raw(mems_info* info, mems_data_frame_80* frame80, mems_data_frame_7d* frame7d)
@@ -272,14 +263,14 @@ bool mems_read(mems_info* info, mems_data* data)
     memset(data, 0, sizeof(mems_data));
 
     data->engine_rpm           = ((uint16_t)dframe80.engine_rpm_hi << 8) | dframe80.engine_rpm_lo;
-    data->coolant_temp_f       = temperature_value_to_degrees_f(dframe80.coolant_temp);
-    data->ambient_temp_f       = temperature_value_to_degrees_f(dframe80.ambient_temp);
-    data->intake_air_temp_f    = temperature_value_to_degrees_f(dframe80.intake_air_temp);
-    data->fuel_temp_f          = temperature_value_to_degrees_f(dframe80.fuel_temp);
+    data->coolant_temp_c       = dframe80.coolant_temp;
+    data->ambient_temp_c       = dframe80.ambient_temp;
+    data->intake_air_temp_c    = dframe80.intake_air_temp;
+    data->fuel_temp_c          = dframe80.fuel_temp;
     data->map_kpa              = dframe80.map_kpa;
     data->battery_voltage      = dframe80.battery_voltage / 10.0;
     data->throttle_pot_voltage = dframe80.throttle_pot * 0.02;
-    data->idle_switch          = ((dframe80.idle_switch & 0x10) == 0) ? 0 : 1;
+    data->idle_switch          = (dframe80.idle_switch == 0) ? 0 : 1;
     data->park_neutral_switch  = (dframe80.park_neutral_switch == 0) ? 0 : 1;
     data->fault_codes          = 0;
     data->iac_position         = dframe80.iac_position;

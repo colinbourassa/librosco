@@ -158,10 +158,10 @@ typedef struct
 typedef struct
 {
     uint16_t engine_rpm;
-    uint8_t coolant_temp_f;
-    uint8_t ambient_temp_f;
-    uint8_t intake_air_temp_f;
-    uint8_t fuel_temp_f;
+    uint8_t coolant_temp_c;
+    uint8_t ambient_temp_c;
+    uint8_t intake_air_temp_c;
+    uint8_t fuel_temp_c;
     float map_kpa;
     float battery_voltage;
     float throttle_pot_voltage;

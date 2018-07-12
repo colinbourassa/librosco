@@ -2,13 +2,13 @@ cmake_minimum_required (VERSION 2.8)
 project (librosco)
 
 set(PROJECT_NAME "librosco")
-set(PROJECT_DESCRIPTION "Library supporting serial communication with the Rover MEMS engine control module")
+set(PROJECT_DESCRIPTION "Library supporting serial communication with the Rover MEMS 1.6 engine control module via the ROSCO protocol")
 set(PROJECT_AUTHOR "Colin Bourassa <colin.bourassa@gmail.com>")
 set(PROJECT_URL "https://github.com/colinbourassa/librosco")
 
-set (LIBROSCO_VER_MAJOR 0)
-set (LIBROSCO_VER_MINOR 1)
-set (LIBROSCO_VER_PATCH 12)
+set (LIBROSCO_VER_MAJOR 1)
+set (LIBROSCO_VER_MINOR 0)
+set (LIBROSCO_VER_PATCH 0)
 set (LIBROSCO_VERSION "${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}")
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin")
