@@ -6,6 +6,15 @@ set(PROJECT_DESCRIPTION "Library supporting serial communication with the Rover 
 set(PROJECT_AUTHOR "Colin Bourassa <colin.bourassa@gmail.com>")
 set(PROJECT_URL "https://github.com/colinbourassa/librosco")
 
+# for Darwin support
+if(POLICY CMP0042)
+  cmake_policy(SET CMP0042 OLD)
+endif()
+
+if(POLICY CMP0068)
+  cmake_policy(SET CMP0068 OLD)
+endif()
+
 set (LIBROSCO_VER_MAJOR 1)
 set (LIBROSCO_VER_MINOR 0)
 set (LIBROSCO_VER_PATCH 0)
@@ -17,7 +26,8 @@ set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "bin")
 set (SOURCE_SUBDIR "${CMAKE_SOURCE_DIR}/src")
 
 if ((CMAKE_SYSTEM_NAME MATCHES "OpenBSD") OR
-    (CMAKE_SYSTEM_NAME MATCHES "FreeBSD"))
+    (CMAKE_SYSTEM_NAME MATCHES "FreeBSD") OR
+    (CMAKE_SYSTEM_NAME MATCHES "Darwin"))
   set (CMAKE_INSTALL_PREFIX "/usr/local")
   message (STATUS "System is OpenBSD/FreeBSD/OS X; install path prefix is set to ${CMAKE_INSTALL_PREFIX}.")
 elseif(CMAKE_SYSTEM_NAME MATCHES "NetBSD")
@@ -217,7 +227,15 @@ else()
                DESTINATION "${LIB_DESTINATION_DIR}"
                PERMISSIONS
                 OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
-    else()
+    elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    message (STATUS "Using Mac OS X-style shared library naming.")
+    install (FILES ${BINDIR}/${PROJECT_NAME}.dylib
+                   ${BINDIR}/${PROJECT_NAME}.${LIBROSCO_VER_MAJOR}.dylib
+                   ${BINDIR}/${PROJECT_NAME}.${LIBROSCO_VER_MAJOR}.${LIBROSCO_VER_MINOR}.${LIBROSCO_VER_PATCH}.dylib
+             DESTINATION "lib"
+             PERMISSIONS
+              OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+   else()
       message (STATUS "Using Linux/FreeBSD-style shared library naming.")
       install (FILES "${BINDIR}/${PROJECT_NAME}.so"
                      "${BINDIR}/${PROJECT_NAME}.so.${LIBROSCO_VER_MAJOR}"
