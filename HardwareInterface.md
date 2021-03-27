@@ -1,4 +1,4 @@
-_This is a mirror of the information in [my personal webspace](http://alum.wpi.edu/~colinb/rover-mems-16-diagnostic-protocol.html)._
+_This is a mirror of the information in [my personal webspace](https://colinbourassa.github.io/car_stuff/mems_interface/#building-a-cable)._
 
 ## Building a cable ##
 To build a cable that will connect to the MEMS 1.6 ECU's diagnostic port, you will need three things:
@@ -11,7 +11,7 @@ To build a cable that will connect to the MEMS 1.6 ECU's diagnostic port, you wi
   * [Mouser (US)](http://www.mouser.com/ProductDetail/TE-Connectivity-AMP/172201-1/?qs=mfBlxA6VMP46pCPSoAJQ0g==)
   * [Tencell (UK)](https://www.tencell.com/products/172201-1.html)
 
-* Three pins for the connector shell. The pins are also manufactured by TE Connectivity, part number 170280. Most retailers only sell these in bulk. The smallest quantities I could find were strips of 50, so you may want to get some friends together and build several cables:
+* Three pins for the connector shell. The pins are also manufactured by TE Connectivity, part number 170280 for strips of 50. I've been told that they're also available singly, part number 170293.
   * [Allied Electronics (US)](http://www.alliedelec.com/search/productdetail.aspx?SKU=70284521)
   * [RS (UK)](http://uk.rs-online.com/web/p/products/7121729/)
 
@@ -25,4 +25,4 @@ When looking for the diagnostic connector on the vehicle, note that cars with a 
 |C549-2|Yellow|Rx (car ECU to PC)|White w/ yellow|
 |C549-3|Orange|Tx (PC to car ECU)|Black w/ green|
 
-![http://alum.wpi.edu/~colinb/images/te_connectivity_172201.jpg](http://alum.wpi.edu/~colinb/images/te_connectivity_172201.jpg)
+![https://colinbourassa.github.io/car_stuff/images/te_connectivity_172201.jpg](https://colinbourassa.github.io/car_stuff/images/te_connectivity_172201.jpg)
