@@ -9,14 +9,13 @@ Discussion group:
 https://groups.google.com/forum/#!forum/mems-diagnostics
 ------------
 
-librosco is a cross-platform library that is capable of communicating
-with the Rover Modular Engine Management System (MEMS) via the ECU's diagnostic
-port.
-
-Currently, this library only supports the protocol used by MEMS version 1.6.
+librosco is a cross-platform library that is capable of communicating with
+certain versions of the Rover Modular Engine Management System (MEMS) via the
+ECU's diagnostic port. Only MEMS units that speak the ROSCO protocol are
+supported (e.g. MEMS 1.6).
 
 A special cable is required to connect to the ECU. This is detailed on the
-following web site:
+following page:
 
 https://github.com/colinbourassa/librosco/blob/wiki/HardwareInterface.md
 
