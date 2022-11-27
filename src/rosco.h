@@ -3,6 +3,7 @@
 
 /** \file mems.h
  * Header file defining the librosco functions, structs, and enums.
+ * Some data is from https://memsfcr.co.uk/ecu-data-values/
  */
 
 #include <stdint.h>
@@ -84,37 +85,37 @@ typedef enum mems_actuator_command actuator_cmd;
 typedef struct
 {
   uint8_t bytes_in_frame;
-  uint8_t b;
-  uint8_t c;
-  uint8_t d;
-  uint8_t e;
-  uint8_t f;
-  uint8_t g;
-  uint8_t lambda_voltage;
-  uint8_t i;
-  uint8_t j;
+  uint8_t ignition_switch_state;
+  uint8_t throttle_angle;        // multiply by 0.6 for angle
+  uint8_t unknown4;
+  uint8_t air_fuel_ratio;        // divide by 10.0 for ratio
+  uint8_t dtc2;                  // unknown trouble codes
+  uint8_t lambda_voltage;        // multiply by 5 for voltage
+  uint8_t lambda_freq;
+  uint8_t lambda_dutycycle;
+  uint8_t lambda_status;         // 1 when the O2 sensor circuit is active
   uint8_t closed_loop;
-  uint8_t l;
-  uint8_t fuel_trim;
-  uint8_t n;
-  uint8_t o;
+  uint8_t long_term_fuel_trim;
+  uint8_t short_term_fuel_trim;
+  uint8_t carbon_canister_duty_cycle;
+  uint8_t dtc3;                  // unknown trouble codes
   uint8_t idle_base_pos;
-  uint8_t q;
-  uint8_t r;
-  uint8_t s;
-  uint8_t t;
-  uint8_t u;
-  uint8_t v;
-  uint8_t w;
-  uint8_t x;
-  uint8_t y;
-  uint8_t z;
-  uint8_t aa;
-  uint8_t bb;
-  uint8_t cc;
-  uint8_t dd;
-  uint8_t ee;
-  uint8_t ff;
+  uint8_t unknown5;
+  uint8_t dtc4;                  // unknown trouble codes
+  uint8_t ignition_advance2;     // subtract 48?
+  uint8_t idle_speed_offset;
+  uint8_t idle_error2;
+  uint8_t unknown6;
+  uint8_t unknown7;
+  uint8_t unknown8;
+  uint8_t unknown9;
+  uint8_t unknownA;
+  uint8_t unknownB;
+  uint8_t unknownC;
+  uint8_t unknownD;
+  uint8_t unknownE;
+  uint8_t unknownF;
+  uint8_t unknown10;
 } mems_data_frame_7d;
 
 /**
@@ -130,26 +131,27 @@ typedef struct
     uint8_t intake_air_temp;
     uint8_t fuel_temp;
     uint8_t map_kpa;
-    uint8_t battery_voltage;
-    uint8_t throttle_pot;
+    uint8_t battery_voltage;     // divide value by 10.0 for voltage
+    uint8_t throttle_pot;        // multiply by 0.02 for voltage
     uint8_t idle_switch;
-    uint8_t b;
+    uint8_t unknown0;
     uint8_t park_neutral_switch;
     uint8_t dtc0;
     uint8_t dtc1;
-    uint8_t c;
-    uint8_t d;
-    uint8_t e;
+    uint8_t idle_setpoint;       // adjusts idle RPM by value shown
+    uint8_t idle_hot;            // subtract 35 for value
+    uint8_t unknown1;
     uint8_t iac_position;
     uint8_t idle_error_hi;
     uint8_t idle_error_lo;
-    uint8_t f;
-    uint8_t ignition_advance;
-    uint8_t coil_time_hi;
+    uint8_t ignition_advance_offset;
+    uint8_t ignition_advance;    // value of 128 == 0 degree of advance?
+                                 // some docs also suggest dividing by 2 and then subtracting 24
+    uint8_t coil_time_hi;        // multiply by 0.002 for coil time in ms
     uint8_t coil_time_lo;
-    uint8_t g;
-    uint8_t h;
-    uint8_t i;
+    uint8_t crankshaft_pos;
+    uint8_t unknown2;
+    uint8_t unknown3;
 } mems_data_frame_80;
 
 /**
